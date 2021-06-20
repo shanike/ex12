@@ -51,6 +51,4 @@ if __name__ == "__main__":
     words = get_words('mini_words.txt')
     pprint(words)
 
-    print("testing is_valid_path:")
-    is_valid = is_valid_path(bo, [(0, 1), (0, 2), (0, 3)], words)
-    print("is_valid: ", is_valid)
+    word = is_valid_path(bo, [(0, 1), (0, 2), (0, 3)], words)

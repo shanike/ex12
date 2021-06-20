@@ -1,7 +1,5 @@
-from typing import List, Tuple
 
-
-def is_valid_path(board, path: List[Tuple[int, int]], words):
+def is_valid_path(board, path, words):
     """
         returns None if path is not a valid path, or if the word created through the path is not in the words list.
         otherwise returns the word
@@ -23,6 +21,14 @@ def is_valid_path(board, path: List[Tuple[int, int]], words):
 
 
 def find_length_n_paths(n, board, words):
+    """
+       returns a list of all paths who are as long as <n>
+       e.g: for n == 2, return value might be [[(0,0), (1,0)], [(0,0), (0,1)]]
+
+        :param n: {int} -- length of paths to find
+        :param board: {[[str]]} -- board game
+        :param words: {[str]} -- list of words
+    """
     pass
 
 

@@ -33,8 +33,24 @@ def randomize_board(dice_list=LETTERS):
             letter = random.choice(die)
             row.append(letter)
         board.append(row)
+    return [['A', 'A', 'N', 'D'],
+            ['N', 'D', 'R', 'E'],
+            ['A', 'Y', 'C', 'I'],
+            ['M', 'J', 'R', 'O']]
     return board
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     from pprint import pprint
-    pprint(randomize_board())
+    from ex12_utils import is_valid_path, get_words
+
+    bo = randomize_board()
+
+    pprint(bo)
+
+    words = get_words('mini_words.txt')
+    pprint(words)
+
+    print("testing is_valid_path:")
+    is_valid = is_valid_path(bo, [(0, 1), (0, 2), (0, 3)], words)
+    print("is_valid: ", is_valid)

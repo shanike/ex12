@@ -42,7 +42,7 @@ def randomize_board(dice_list=LETTERS):
 
 if __name__ == "__main__":
     from pprint import pprint
-    from ex12_utils import is_valid_path, get_words
+    from ex12_utils import is_valid_path, get_words, find_length_n_paths
 
     bo = randomize_board()
 
@@ -51,4 +51,5 @@ if __name__ == "__main__":
     words = get_words('mini_words.txt')
     pprint(words)
 
-    word = is_valid_path(bo, [(0, 1), (0, 2), (0, 3)], words)
+    paths = find_length_n_paths(3, bo, words)
+    print("paths: ", paths)

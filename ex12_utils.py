@@ -16,8 +16,20 @@ def is_valid_path(board, path, words):
             return None  # invalid location -- not on board
         word += board[row][col]
 
-    print('is_valid_path found word: ', word); # debugging purposes
+    # print('is_valid_path found word: ', word)  # debugging purposes
     return word if word in words else None
+
+
+NEIGHBORS = [
+    (-1, 0),  # up
+    (0, 1),  # right
+    (1, 0),  # down
+    (0, -1),  # left
+    (-1, 1),
+    (1, 1),
+    (1, -1),
+    (-1, -1)
+]
 
 
 def find_length_n_paths(n, board, words):
@@ -29,7 +41,32 @@ def find_length_n_paths(n, board, words):
         :param board: {[[str]]} -- board game
         :param words: {[str]} -- list of words
     """
-    pass
+    paths = []
+    words_me= []
+    for row in range(len(board)):
+        for col in range(len(board[0])):
+            _find_length_n_paths_helper(n, board, words, (row, col), paths, [(row, col)], words_me)
+    return paths
+
+
+# * changes <paths> list:
+def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, words_me):
+
+    print('curr_path: ', curr_path)
+
+    if len(curr_path) == n:
+        res = is_valid_path(board, curr_path, words)
+        if res:
+            words_me.append(res)
+            paths.append(curr_path)
+        return False
+
+    for neighbor in NEIGHBORS:
+        new_loc = tuple(loc + nei for loc, nei in zip(start, neighbor))
+        _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc], words_me)
+            
+
+    return True
 
 
 def find_length_n_words(n, board, words):

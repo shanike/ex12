@@ -72,6 +72,13 @@ def valid_point(coordinate, board):
 
 
 def find_length_n_words(n, board, words):
+    """
+       returns a list of all paths who represents a word as long as <n>
+        :param n: {int} -- length of words to find their paths
+        :param board: {[[str]]} -- board game
+        :param words: {[str]} -- list of words
+    """
+    #  לעבור על כל המילים ולסנן אותן מראש לפי האורך, ואז לחפש כל אחד מהם בכל -path עם ברקטרקינג (?)
     pass
 
 

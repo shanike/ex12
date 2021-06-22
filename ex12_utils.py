@@ -1,4 +1,3 @@
-
 def is_valid_path(board, path, words):
     """
         returns None if path is not a valid path, or if the word created through the path is not in the words list.
@@ -11,7 +10,7 @@ def is_valid_path(board, path, words):
     word = ""
     for coord in path:
         row, col = coord
-        if row < 0 or row >= len(board) or col < 0 or col >= len(board[0]):
+        if not valid_point(coord, board):
             # print("invalid location -- not on board") # debugging purposes
             return None  # invalid location -- not on board
         word += board[row][col]
@@ -25,10 +24,10 @@ NEIGHBORS = [
     (0, 1),  # right
     (1, 0),  # down
     (0, -1),  # left
-    (-1, 1),
-    (1, 1),
-    (1, -1),
-    (-1, -1)
+    (-1, 1),  # dur
+    (1, 1),  # ddr
+    (1, -1),  # ddl
+    (-1, -1)  # dul
 ]
 
 
@@ -42,7 +41,8 @@ def find_length_n_paths(n, board, words):
         :param words: {[str]} -- list of words
     """
     paths = []
-    words_me= []
+    words_me = []
+    #  todo change iterates
     for row in range(len(board)):
         for col in range(len(board[0])):
             _find_length_n_paths_helper(n, board, words, (row, col), paths, [(row, col)], words_me)
@@ -51,21 +51,23 @@ def find_length_n_paths(n, board, words):
 
 # * changes <paths> list:
 def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, words_me):
-
-    print('curr_path: ', curr_path)
-
     if len(curr_path) == n:
         res = is_valid_path(board, curr_path, words)
         if res:
-            words_me.append(res)
+            words_me.append(res)  # todo check for what
             paths.append(curr_path)
         return False
 
     for neighbor in NEIGHBORS:
         new_loc = tuple(loc + nei for loc, nei in zip(start, neighbor))
-        _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc], words_me)
-            
+        if valid_point(new_loc, board):
+            _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc], words_me)
 
+
+def valid_point(coordinate, board):
+    row, col = coordinate
+    if row < 0 or row >= len(board) or col < 0 or col >= len(board[0]):
+        return False
     return True
 
 

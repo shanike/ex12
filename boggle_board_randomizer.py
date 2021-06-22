@@ -34,8 +34,8 @@ def randomize_board(dice_list=LETTERS):
             row.append(letter)
         board.append(row)
     return [['A', 'A', 'N', 'D'],
-            ['N', 'D', 'R', 'E'],
-            ['A', 'Y', 'C', 'I'],
+            ['N', 'D', 'N', 'E'],
+            ['A', 'Y', 'D', 'I'],
             ['M', 'J', 'R', 'O']]
     return board
 

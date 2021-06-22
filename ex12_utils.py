@@ -41,27 +41,24 @@ def find_length_n_paths(n, board, words):
         :param words: {[str]} -- list of words
     """
     paths = []
-    words_me = []
-    #  todo change iterates
     for row in range(len(board)):
         for col in range(len(board[0])):
-            _find_length_n_paths_helper(n, board, words, (row, col), paths, [(row, col)], words_me)
+            _find_length_n_paths_helper(n, board, words, (row, col), paths, [(row, col)])
     return paths
 
 
 # * changes <paths> list:
-def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, words_me):
+def _find_length_n_paths_helper(n, board, words, start, paths, curr_path):
     if len(curr_path) == n:
         res = is_valid_path(board, curr_path, words)
         if res:
-            words_me.append(res)  # todo check for what
             paths.append(curr_path)
         return False
 
     for neighbor in NEIGHBORS:
         new_loc = tuple(loc + nei for loc, nei in zip(start, neighbor))
         if valid_point(new_loc, board):
-            _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc], words_me)
+            _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc])
 
 
 def valid_point(coordinate, board):

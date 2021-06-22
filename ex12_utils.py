@@ -10,7 +10,7 @@ def is_valid_path(board, path, words):
     word = ""
     for coord in path:
         row, col = coord
-        if not valid_point(coord, board):
+        if not is_valid_coord(coord, board):
             # print("invalid location -- not on board") # debugging purposes
             return None  # invalid location -- not on board
         word += board[row][col]
@@ -60,11 +60,11 @@ def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, words_
 
     for neighbor in NEIGHBORS:
         new_loc = tuple(loc + nei for loc, nei in zip(start, neighbor))
-        if valid_point(new_loc, board):
+        if is_valid_coord(new_loc, board):
             _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc], words_me)
 
 
-def valid_point(coordinate, board):
+def is_valid_coord(coordinate, board):
     row, col = coordinate
     if row < 0 or row >= len(board) or col < 0 or col >= len(board[0]):
         return False

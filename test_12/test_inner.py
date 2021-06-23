@@ -154,5 +154,5 @@ def test_find_length_n_words():
     assert sorted(find_length_n_words(7, board, words)) == sorted(
         [])
 
-test_find_length_n_words()
-test_is_valid_path()
+# test_find_length_n_words()
+# test_is_valid_path()

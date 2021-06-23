@@ -1,3 +1,7 @@
+# import numpy
+from constants import NEIGHBORS
+
+
 def is_valid_path(board, path, words):
     """
         returns None if path is not a valid path, or if the word created through the path is not in the words list.
@@ -7,28 +11,22 @@ def is_valid_path(board, path, words):
         :param path: {[tuple]} -- [(0,0), (0,1)] -- a path on the board, where each location is a tuple: [0] is row [1] is col
         :param words: {[str]} -- list of words
     """
+
     word = ""
-    for coord in path:
+    if does_have_duplicates(path):
+        return None
+    for i, coord in enumerate(path):
         row, col = coord
-        if not is_valid_coord(coord, board):
-            # print("invalid location -- not on board") # debugging purposes
-            return None  # invalid location -- not on board
+        if not _is_on_board(coord, board):
+            return None
+
+        if i != len(path) - 1:  # not last -- there's another coord to check after me
+            if not is_my_neighbor(coord, path[i + 1], board):
+                # not last coord in path + next coord is a neighbor of mine
+                return None
         word += board[row][col]
 
-    # print('is_valid_path found word: ', word)  # debugging purposes
     return word if word in words else None
-
-
-NEIGHBORS = [
-    (-1, 0),  # up
-    (0, 1),  # right
-    (1, 0),  # down
-    (0, -1),  # left
-    (-1, 1),  # dur
-    (1, 1),  # ddr
-    (1, -1),  # ddl
-    (-1, -1)  # dul
-]
 
 
 def find_length_n_paths(n, board, words):
@@ -40,43 +38,73 @@ def find_length_n_paths(n, board, words):
         :param board: {[[str]]} -- board game
         :param words: {[str]} -- list of words
     """
+    if n > len(board) * len(board[0]):
+        # not enough letters on board to create a <n>'s length path
+        return []
     paths = []
     for row in range(len(board)):
         for col in range(len(board[0])):
-            _find_length_n_paths_helper(n, board, words, (row, col), paths, [(row, col)])
+            curr_loc = (row, col)
+            _find_length_n_paths_helper(n, board, words, curr_loc, paths, [curr_loc], get_letter(board, curr_loc))
     return paths
 
 
-# * changes <paths> list:
-def _find_length_n_paths_helper(n, board, words, start, paths, curr_path):
+def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, curr_word):
+    """
+    recursive function that checks all paths of length <n> and appends to <paths> list only the paths which create a
+    word which is in the <words> list
+    * changes <paths> param
+
+    :param start: tuple of row, col -- current location in path in board
+    :param paths: list of paths -- the list to which good paths are added to
+    :param curr_path: list of locations (tuples) -- path while it's being created
+    :param curr_word: str -- word being created of the path being created
+    """
     if len(curr_path) == n:
-        res = is_valid_path(board, curr_path, words)
-        if res:
+        print("curr_path: ", curr_path, curr_word)
+        # finished this path, check word
+        if curr_word in words:
             paths.append(curr_path)
         return False
 
     for neighbor in NEIGHBORS:
-        new_loc = tuple(loc + nei for loc, nei in zip(start, neighbor))
-        if is_valid_coord(new_loc, board):
-            _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc])
-
-
-def is_valid_coord(coordinate, board):
-    row, col = coordinate
-    if row < 0 or row >= len(board) or col < 0 or col >= len(board[0]):
-        return False
-    return True
+        new_loc = tuple(loc + nei for loc, nei in zip(start, neighbor))  # jump to next location
+        if _is_on_board(new_loc, board):  # check if new location is on the board...
+            curr_letter = get_letter(board, new_loc)
+            _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc], curr_word + curr_letter)
 
 
 def find_length_n_words(n, board, words):
     """
-       returns a list of all paths who represents a word as long as <n>
+       returns a list of all paths which represents a word as long as <n>
         :param n: {int} -- length of words to find their paths
         :param board: {[[str]]} -- board game
         :param words: {[str]} -- list of words
     """
-    #  לעבור על כל המילים ולסנן אותן מראש לפי האורך, ואז לחפש כל אחד מהם בכל -path עם ברקטרקינג (?)
-    pass
+    words_n_length = {word for word in words if len(word) == n}
+    if not len(words_n_length):
+        return []
+    paths = []
+    for row in range(len(board)):
+        for col in range(len(board[0])):
+            curr_loc = (row, col)
+            _find_length_n_words_helper(n, board, words_n_length, curr_loc, paths, [curr_loc],
+                                        get_letter(board, curr_loc))
+
+    return paths
+
+
+def _find_length_n_words_helper(n, board, words, start, paths, curr_path, curr_word):
+    if len(curr_word) >= n:
+        if len(curr_word) == n and curr_word in words:
+            paths.append(curr_path)
+        return
+
+    for neighbor in NEIGHBORS:
+        new_loc = get_neighbor_loc(start, neighbor)  # jump to next location
+        if _is_on_board(new_loc, board) and new_loc not in curr_path:
+            curr_letter = get_letter(board, new_loc)
+            _find_length_n_words_helper(n, board, words, new_loc, paths, curr_path + [new_loc], curr_word + curr_letter)
 
 
 def max_score_paths(board, words):
@@ -86,3 +114,49 @@ def max_score_paths(board, words):
 def get_words(words_file):
     with open(words_file, 'r') as file:
         return [word.rstrip() for word in file]
+
+
+def _is_on_board(coordinate, board):
+    row, col = coordinate
+    if row < 0 or row >= len(board) or col < 0 or col >= len(board[0]):
+        return False
+    return True
+
+
+def is_my_neighbor(coord, next_coord, bo):
+    """
+    checks if given <coord> and <next_coord> are neighbors
+    :type coord: (row, col)
+    :type next_coord: (row, col)
+    """
+    for nei in NEIGHBORS:
+        if get_neighbor_loc(coord, nei) == next_coord:
+            return True
+    return False
+
+
+def get_letter(board, coordinate):
+    """
+    returns value of given coordinate
+    :param coordinate: (row, col)
+    :type coordinate: tuple (length: 2)
+    """
+    return board[coordinate[0]][coordinate[1]]
+
+
+def does_have_duplicates(container):
+    """
+    checks if a container has duplicate items by converting container to a set
+    :rtype: bool
+    """
+    return len(set(container)) != len(container)
+
+
+def get_neighbor_loc(loc, neighbor_tuple):
+    """
+    calculates neighbor's location
+    :param loc: (row, col)
+    :param neighbor_tuple: one of NEIGHBOR const items
+    :return: location of neighbor
+    """
+    return tuple(loc + nei for loc, nei in zip(loc, neighbor_tuple))

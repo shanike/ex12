@@ -42,14 +42,19 @@ def randomize_board(dice_list=LETTERS):
 
 if __name__ == "__main__":
     from pprint import pprint
-    from ex12_utils import is_valid_path, get_words, find_length_n_paths
+    from ex12_utils import is_valid_path, get_words, find_length_n_paths, find_length_n_words
 
     bo = randomize_board()
 
-    pprint(bo)
+    board = [['Q', 'Q', 'Q', 'Q'],
+        ['DO', 'GS', 'Q', 'Q'],
+        ['Q', 'Q', 'Q', 'Q'],
+        ['Q', 'Q', 'Q', 'Q']]
+    pprint(board)
+    word_dict = {'DOGS': True}
+    expected = [[(1, 0), (1, 1)]]
+    res = find_length_n_paths(2, board, word_dict)
+    print("res: ", res)
+    assert res == expected
 
-    words = get_words('mini_words.txt')
-    pprint(words)
 
-    paths = find_length_n_paths(3, bo, words)
-    print("paths: ", paths)

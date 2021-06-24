@@ -1,4 +1,3 @@
-# import numpy
 from constants import NEIGHBORS
 
 
@@ -11,7 +10,6 @@ def is_valid_path(board, path, words):
         :param path: {[tuple]} -- [(0,0), (0,1)] -- a path on the board, where each location is a tuple: [0] is row [1] is col
         :param words: {[str]} -- list of words
     """
-
     word = ""
     if _does_have_duplicates(path):
         return None
@@ -21,7 +19,7 @@ def is_valid_path(board, path, words):
             return None
 
         if i != len(path) - 1:  # not last -- there's another coord to check after me
-            if not _is_my_neighbor(coord, path[i + 1], board):
+            if not _is_my_neighbor(coord, path[i + 1]):
                 # not last coord in path + next coord is a neighbor of mine
                 return None
         word += board[row][col]
@@ -31,16 +29,17 @@ def is_valid_path(board, path, words):
 
 def find_length_n_paths(n, board, words):
     """
-       returns a list of all paths who are as long as <n>
+       returns a list of all paths which are as long as <n> and which create a word which is in <words>
        e.g: for n == 2, return value might be [[(0,0), (1,0)], [(0,0), (0,1)]]
 
         :param n: {int} -- length of paths to find
         :param board: {[[str]]} -- board game
-        :param words: {[str]} -- list of words
+        :param words: {[str]} -- container of words
     """
-    if n > len(board) * len(board[0]):
-        # not enough letters on board to create a <n>'s length path
+    if n > (len(board) * len(board[0])):
+        # not enough items on board to create a <n>'s length path
         return []
+
     paths = []
     for row in range(len(board)):
         for col in range(len(board[0])):
@@ -61,17 +60,20 @@ def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, curr_w
     :param curr_word: str -- word being created of the path being created
     """
     if len(curr_path) == n:
-        print("curr_path: ", curr_path, curr_word)
         # finished this path, check word
         if curr_word in words:
             paths.append(curr_path)
-        return False
+        return
 
     for neighbor in NEIGHBORS:
-        new_loc = tuple(loc + nei for loc, nei in zip(start, neighbor))  # jump to next location
-        if _is_coord_on_board(new_loc, board):  # check if new location is on the board...
-            curr_letter = _get_letter(board, new_loc)
-            _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc], curr_word + curr_letter)
+        new_loc = _get_neighbor_loc(start, neighbor)  # jump to next location
+        # check if new location is on the board...
+        # or if current path already traveled to this loc
+        if not _is_coord_on_board(new_loc, board) or new_loc in curr_path:
+            continue
+        new_word = curr_word + _get_letter(board, new_loc)
+
+        _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc], new_word)
 
 
 def find_length_n_words(n, board, words):
@@ -84,11 +86,12 @@ def find_length_n_words(n, board, words):
     words_n_length = {word for word in words if len(word) == n}
     if not len(words_n_length):
         return []
+
     paths = []
     for row in range(len(board)):
         for col in range(len(board[0])):
             curr_loc = (row, col)
-            _find_length_n_words_helper(n, board, words_n_length, curr_loc, paths, [curr_loc],
+            _find_length_n_words_helper(n, board, list(words_n_length), curr_loc, paths, [curr_loc],
                                         _get_letter(board, curr_loc))
 
     return paths
@@ -102,17 +105,37 @@ def _find_length_n_words_helper(n, board, words, start, paths, curr_path, curr_w
         if len(curr_word) == n and curr_word in words:
             paths.append(curr_path)
         return
-
+    if not len(words):
+        return
     for neighbor in NEIGHBORS:
         new_loc = _get_neighbor_loc(start, neighbor)  # jump to next location
-        if _is_coord_on_board(new_loc, board) and new_loc not in curr_path:
-            curr_letter = _get_letter(board, new_loc)
-            _find_length_n_words_helper(n, board, words, new_loc, paths, curr_path + [new_loc], curr_word + curr_letter)
+        if not _is_coord_on_board(new_loc, board) or new_loc in curr_path:
+            continue
+        curr_letter = _get_letter(board, new_loc)
+
+        _find_length_n_words_helper(n, board, {word for word in words if word.startswith(curr_word)},
+                                    new_loc, paths,
+                                    curr_path + [new_loc],
+                                    curr_word + curr_letter)
+
+
+# def find_length_n_words_2(n, board, words):
+#     paths = []
+#     for word in words:
+#         _find_length_n_words_2_helper(n, board, words, paths, )
+#
+#     return paths
+
+
+# def _find_length_n_words_2_helper(n, board, words, paths, start, curr_path, curr_word):
+#     for row in range(len(board)):
+#         for col in range(len(board[0])):
+#             _find_length_n_words_2_helper(n, board, words, paths, )
 
 
 def max_score_paths(board, words):
-    # todo
-    pass
+    # go over words, for each word:
+    return []
 
 
 def get_words(words_file):

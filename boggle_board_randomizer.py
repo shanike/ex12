@@ -33,28 +33,33 @@ def randomize_board(dice_list=LETTERS):
             letter = random.choice(die)
             row.append(letter)
         board.append(row)
-    return [['A', 'A', 'N', 'D'],
-            ['N', 'D', 'N', 'E'],
-            ['A', 'Y', 'D', 'I'],
-            ['M', 'J', 'R', 'O']]
+
+    # return [['A', 'B'], ['C', 'DEFG']]
+
+    # return [['A', 'A', 'N', 'D'],
+    #     ['N', 'D', 'N', 'E'],
+    #     ['A', 'Y', 'D', 'I'],
+    #     ['M', 'J', 'R', 'O']]
     return board
 
 
 if __name__ == "__main__":
     from pprint import pprint
     from ex12_utils import is_valid_path, get_words, find_length_n_paths, find_length_n_words
+    import time
 
-    bo = randomize_board()
+    board = randomize_board()
+    lots_of_words = get_words('./boggle_dict.txt')
 
-    board = [['Q', 'Q', 'Q', 'Q'],
-        ['DO', 'GS', 'Q', 'Q'],
-        ['Q', 'Q', 'Q', 'Q'],
-        ['Q', 'Q', 'Q', 'Q']]
     pprint(board)
-    word_dict = {'DOGS': True}
-    expected = [[(1, 0), (1, 1)]]
-    res = find_length_n_paths(2, board, word_dict)
-    print("res: ", res)
-    assert res == expected
 
+    # start1 = time.time()
+    # res = find_length_n_paths(5, board, lots_of_words)
+    # end1 = time.time()
+
+    start2 = time.time()
+    res2 = find_length_n_words(5, board, lots_of_words)
+    end2 = time.time()
+    # print("find_length_n_paths took:", end1 - start1)
+    print("find_length_n_words took:", end2 - start2)
 

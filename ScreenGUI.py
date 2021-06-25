@@ -35,7 +35,7 @@ class ScreenGUI:
 
         root.configure(background=ScreenGUI.BG_COLOR)
         w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-        root.geometry("%dx%d+0+0" % (w / 2, h / 2))
+        root.geometry("%dx%d+0+0" % (w/2, h))
         self.root = root
 
     def static_widgets(self):

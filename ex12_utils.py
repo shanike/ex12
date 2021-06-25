@@ -73,7 +73,7 @@ def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, curr_w
             continue
         new_word = curr_word + _get_letter(board, new_loc)
 
-        _find_length_n_paths_helper(n, board, words, new_loc, paths, curr_path + [new_loc], new_word)
+        _find_length_n_paths_helper(n, board, {word for word in words if word.startswith(curr_word)}, new_loc, paths, curr_path + [new_loc], new_word)
 
 
 def find_length_n_words(n, board, words):

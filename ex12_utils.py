@@ -230,3 +230,17 @@ def _does_have_duplicates(container):
     :rtype: bool
     """
     return len(set(container)) != len(container)
+
+
+##########################################
+#                                        #
+#      utils, used in other files:       #
+#                                        #
+##########################################
+
+def bind_values_to_func(fn, *args, **kwargs):
+    """
+        returns a function that calls given <fn> with given params 
+        (will pass the relevant information thanks to this closure)
+        """
+    return lambda: fn(*args, **kwargs)

@@ -8,7 +8,7 @@ class ScreenGUI:
 
     BG_COLOR = "lightblue"
 
-    def __init__(self, on_guess):
+    def __init__(self, on_guess, on_reset):
 
         self.root = None
         self.init_root()
@@ -29,9 +29,10 @@ class ScreenGUI:
         self._curr_path_label.pack(side=tk.TOP, pady=10)
 
         # guess button:
-        self.__guess_btn = tk.Button(self.root, text="CHECK", bg="yellow", command=on_guess)
-        self.__guess_btn.configure(background="orange")
-        self.__guess_btn.pack()
+        tk.Button(self.root, text="CHECK", bg="yellow", command=on_guess).pack()
+
+        # reset button:
+        tk.Button(self.root, text="-RESET-", bg="#631166", command=on_reset).pack()
 
         # init board location:
         self.__board_frame = None
@@ -67,7 +68,7 @@ class ScreenGUI:
         self.__words_list_container = tk.Frame(self.root)
         self.__words_list_container.configure(bg=ScreenGUI.BG_COLOR, highlightthickness=1, highlightbackground="brown")
         self.__words_list_container.pack(side=tk.LEFT)
-        
+
         words_list_title = tk.Label(self.__words_list_container, text="Correct words:", bg=ScreenGUI.BG_COLOR)
         words_list_title.pack()
 

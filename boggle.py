@@ -6,7 +6,7 @@ from pprint import pprint
 
 class Boggle:
     def __init__(self):
-        self.__screen = ScreenGUI(self._handle_guess)
+        self.__screen = ScreenGUI(on_guess=self._handle_guess, on_reset=self.___reset_selection)
 
         # init board:
         self.__board = []
@@ -25,7 +25,8 @@ class Boggle:
         self.__score = 0
         self.__update_score()
 
-        self.__update_board()
+        # init correct words:
+        self.__correct_words = []
 
         self.start_game()
 
@@ -41,6 +42,7 @@ class Boggle:
                 board_dict[-1].append({col: False})
         self.__board = board_dict
         self.__board_list = board_list
+        self.__update_board()
 
     def __init_words(self):
         """saves words from ./boggle_dict.txt file in __words list
@@ -87,20 +89,30 @@ class Boggle:
             self.__screen.set_err_msg("not a valid word, sorry (:")
         else:
             # found valid word:
-            self.__screen.set_err_msg("nice job!")
-            self.__score += calc_score(self.__curr_path)  # change score
-
-            for loc in self.__curr_path:  # change board
-                val = list(self.__board[loc[0]][loc[1]].items())[0][0]
-                self.__board[loc[0]][loc[1]] = {val: False}
-
+            if self.__curr_path_label in self.__correct_words:
+                self.__screen.set_err_msg("you correctly guessed this word already")
+                return
+            
+            # update correct words:
+            self.__correct_words.append(self.__curr_path_label)
             self.__screen.add_word_to_list("".join(self.__curr_path_label))
 
-            self.__curr_path = []  # change path
-            self.__curr_path_label = []  # change word
+            # change & update score
+            self.__score += calc_score(self.__curr_path)  # change score
             self.__update_score()
-            self.__update_board()
-            self.__update_path_label()
+
+            self.___reset_selection()
+
+    def ___reset_selection(self):
+
+        for loc in self.__curr_path:  # change board
+            val = list(self.__board[loc[0]][loc[1]].items())[0][0]
+            self.__board[loc[0]][loc[1]] = {val: False}
+
+        self.__curr_path = []  # change path
+        self.__curr_path_label = []  # change word
+        self.__update_board()
+        self.__update_path_label()
 
 
 if __name__ == "__main__":

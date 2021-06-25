@@ -244,3 +244,7 @@ def bind_values_to_func(fn, *args, **kwargs):
         (will pass the relevant information thanks to this closure)
         """
     return lambda: fn(*args, **kwargs)
+
+
+def calc_score(correct_path):
+    return len(correct_path)**2

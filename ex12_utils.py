@@ -1,4 +1,4 @@
-from constants import NEIGHBORS
+from constants import NEIGHBORS, FOUNT_MAX_FOR_WORD
 
 
 def is_valid_path(board, path, words):
@@ -134,8 +134,43 @@ def _find_length_n_words_helper(n, board, words, start, paths, curr_path, curr_w
 
 
 def max_score_paths(board, words):
-    # go over words, for each word:
-    return []
+    # go over words, for each word: find path that might make word out
+    paths = {}
+    for word in words:
+        break_to_next_word = False
+        for row in range(len(board)):
+            if break_to_next_word:
+                break
+            for col in range(len(board[0])):
+                curr_loc = (row, col)
+                cell_res = _max_score_paths_helper(board, paths, curr_loc, word, [curr_loc],
+                                                   _get_letter(board, curr_loc))
+                if cell_res == FOUNT_MAX_FOR_WORD:
+                    break_to_next_word = True
+                    break
+    return list(paths.values())
+
+
+def _max_score_paths_helper(board, paths, curr_loc, word, curr_path, curr_word):
+    if not word.startswith(curr_word):
+        # no reason to check paths from this cell in board, cos none will match <word>
+        return
+
+    if curr_word == word:
+        if len(curr_path) == len(word):
+            # max points for this word,
+            paths[word] = curr_path
+            return FOUNT_MAX_FOR_WORD
+        if word not in paths or len(curr_path) > len(paths[word]):
+            paths[word] = curr_path
+        return
+
+    for neighbor in NEIGHBORS:
+        new_loc = _get_neighbor_loc(curr_loc, neighbor)  # jump to next location
+        if not _is_coord_on_board(new_loc, board) or new_loc in curr_path:
+            continue
+        curr_letter = _get_letter(board, new_loc)
+        _max_score_paths_helper(board, paths, new_loc, word, curr_path + [new_loc], curr_word + curr_letter)
 
 
 def get_words(words_file):

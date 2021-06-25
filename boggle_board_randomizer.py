@@ -35,28 +35,6 @@ def randomize_board(dice_list=LETTERS):
         board.append(row)
     return board
 
-
-if __name__ == "__main__":
+if __name__=="__main__":
     from pprint import pprint
-    from ex12_utils import is_valid_path, get_words, find_length_n_paths, find_length_n_words, max_score_paths
-    import time
-
-    board = randomize_board()
-    lots_of_words = get_words('./boggle_dict.txt')
-
-    pprint(board)
-
-    start1 = time.time()
-    res = find_length_n_paths(5, board, lots_of_words)
-    end1 = time.time()
-    print("find_length_n_paths took:", end1 - start1)
-
-    start2 = time.time()
-    res2 = find_length_n_words(5, board, lots_of_words)
-    end2 = time.time()
-    print("find_length_n_words took:", end2 - start2)
-
-    start3 = time.time()
-    res3 = max_score_paths(board, lots_of_words)
-    end3 = time.time()
-    print("max_score_paths took:", end3 - start3)
+    pprint(randomize_board())

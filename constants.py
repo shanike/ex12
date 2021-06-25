@@ -10,3 +10,6 @@ NEIGHBORS = [
     (1, -1),  # ddl
     (-1, -1)  # dul
 ]
+
+
+FOUNT_MAX_FOR_WORD = 'FOUNT_MAX_FOR_WORD'

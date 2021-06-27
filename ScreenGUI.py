@@ -1,12 +1,14 @@
 from tkinter import font
 from ex12_utils import bind_values_to_func
+from BorderRadius import RoundedButton
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import PhotoImage
 
 
 class ScreenGUI:
 
-    BG_COLOR = "lightblue"
+    BG_COLOR = "#bee3db"
 
     def __init__(self, on_guess, on_reset):
 
@@ -29,10 +31,25 @@ class ScreenGUI:
         self._curr_path_label.pack(side=tk.TOP, pady=10)
 
         # guess button:
-        tk.Button(self.root, text="CHECK", bg="yellow", command=on_guess).pack()
+        self.check_photo = PhotoImage(file="check.png")
+        self.check_photo = self.check_photo.subsample(20)
+        tk.Button(self.root,
+                  image=self.check_photo,
+                  borderwidth=0,
+                  highlightbackground=ScreenGUI.BG_COLOR,
+                  activebackground=ScreenGUI.BG_COLOR,
+                  bg=ScreenGUI.BG_COLOR,
+                  command=on_guess).pack()
 
         # reset button:
-        tk.Button(self.root, text="-RESET-", bg="#631166", command=on_reset).pack()
+        self.reset_photo = PhotoImage(file="reset.png")
+        tk.Button(self.root,
+                  image=self.reset_photo,
+                  command=on_reset,
+                  borderwidth=0,
+                  highlightbackground=ScreenGUI.BG_COLOR,
+                  activebackground=ScreenGUI.BG_COLOR,
+                  bg=ScreenGUI.BG_COLOR).pack()
 
         # init board location:
         self.__board_frame = None
@@ -52,7 +69,8 @@ class ScreenGUI:
         self.root = root
 
     def static_widgets(self):
-        title = tk.Label(self.root, font=("", 20), text="BOGGLE GAME! YAY", background=ScreenGUI.BG_COLOR)
+        title = tk.Label(self.root, font=(
+            "", 20), text="BOGGLE GAME! YAY☺️", background=ScreenGUI.BG_COLOR)
         title.pack(side=tk.TOP, pady=10)
 
         instructions = tk.Label(self.root, font=(
@@ -60,16 +78,18 @@ class ScreenGUI:
         instructions.pack(side=tk.TOP)
 
     def __init_board_frame(self, parent):
-        self.__board_frame = tk.Frame(parent, bd=5, relief="solid")
+        self.__board_frame = tk.Frame(parent, bg=ScreenGUI.BG_COLOR)
         self.__board_frame.grid_columnconfigure(0, weight=1)
         self.__board_frame.pack()
 
     def __init_words_list_container(self):
         self.__words_list_container = tk.Frame(self.root)
-        self.__words_list_container.configure(bg=ScreenGUI.BG_COLOR, highlightthickness=1, highlightbackground="brown")
+        self.__words_list_container.configure(
+            bg=ScreenGUI.BG_COLOR, highlightthickness=1, highlightbackground="brown")
         self.__words_list_container.pack(side=tk.LEFT)
 
-        words_list_title = tk.Label(self.__words_list_container, text="Correct words:", bg=ScreenGUI.BG_COLOR)
+        words_list_title = tk.Label(
+            self.__words_list_container, text="Correct words:", bg=ScreenGUI.BG_COLOR)
         words_list_title.pack()
 
     def update_curr_path_label(self, text):
@@ -81,20 +101,39 @@ class ScreenGUI:
     def update_score_label(self, new_score):
         self.__score_label.configure(text="score: " + str(new_score))
 
+      #  text=value,
+        #  #  image=self.photo,
+        #  command=bind_values_to_func(
+        #      on_selection, value, i, j),
+        #  font=("Monospace", 24, "bold"),
+        #  # todo, colors to constants(!)
+        #  bg="#ffd6ba" if is_selected else "#89b0ae",
+        #  activebackground="#ffe7d6"if is_selected else "#b4dbd9",
+        #  fg="#ffffff"if is_selected else "white",
+        #  activeforeground="#ffffff"if is_selected else "white",
+        #  borderwidth=0,
+        #  relief="solid",
+        #  highlightbackground="white",
+        #  highlightcolor="white",
+        #  highlightthickness=3
     def display_board(self, board, on_selection):
+        self.photo = PhotoImage(file="books-in-system.png")
         for i, row in enumerate(board):
             for j, cell in enumerate(row):
                 value, is_selected = list(cell.items())[0]
-                cell_btn = tk.Button(self.__board_frame,
-                                     text=value,
-                                     command=bind_values_to_func(on_selection, value, i, j),
-                                     font=("", 30),
-                                     bg="#db3545" if is_selected else "#4ec78a",  # todo, colors to constants(!)
-                                     activebackground="#e09fa6"if is_selected else "#c5edd9",
-                                     )
+                cell_btn = RoundedButton(parent=self.__board_frame,
+                                         width=100,
+                                         height=100,
+                                         cornerradius=6,
+                                         padding=2,
+                                         color="#ffd6ba" if is_selected else "#89b0ae",
+                                         active_color="#ffe7d6"if is_selected else "#b4dbd9",
+                                         bg=ScreenGUI.BG_COLOR,
+                                         text_color="white",
+                                         text=value,
+                                         command=bind_values_to_func(on_selection, value, i, j), )
 
-                cell_btn.grid(row=i, column=j)
-                cell_btn.grid_configure(columnspan=1, padx=5, pady=5)
+                cell_btn.grid(row=i, column=j, pady=10, padx=10)
 
     def set_err_msg(self, text):
         messagebox.showerror("Error", text)

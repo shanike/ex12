@@ -1,7 +1,6 @@
 from ex12_utils import _is_my_neighbor, calc_score, get_words, is_valid_path
 from ScreenGUI import ScreenGUI
 from boggle_board_randomizer import randomize_board
-from pprint import pprint
 
 
 class Boggle:
@@ -29,7 +28,7 @@ class Boggle:
     def __start_game(self):
         self.__init_board()
         self.__gui.init_game(self.__board,
-                             on_guess=self._handle_guess,
+                             on_guess=self.__handle_guess,
                              on_reset=self.___reset_selection,
                              on_selection=self.__handle_cell_selection,)
         self.__init_words()
@@ -51,25 +50,32 @@ class Boggle:
         self.__gui.update_score_label(self.__score)
 
     def __handle_cell_selection(self, cell_value, i, j):
+        """function to be called when user presses on a cell in boggle board
+        available cells to click are only cells which are:
+        neighbors of last selected cell, or the last selected cell itself
+        :param cell_value: {str} -- letter(s) value
+        :param i: {int} -- row location
+        :param j: {int} -- column location
+        """
         selected_loc = (i, j)
         if selected_loc in self.__curr_path:
-            # unselect cell:
-            # todo check that path will be valid
-            self.__curr_path.remove(selected_loc)  # update path
-            self.__curr_word_label.remove(cell_value)  # update label
-            self.__gui.update_board(selected_loc, False)
-        else:
-            if len(self.__curr_path) == 0 or _is_my_neighbor(selected_loc, self.__curr_path[-1]):
-                self.__curr_path.append(selected_loc)  # update path
-                self.__curr_word_label.append(cell_value)  # update label
-                self.__gui.update_board(selected_loc, True)
-            else:
-                print("not good")
-                self.__gui.set_err_msg("not neighbor")
+            if selected_loc != self.__curr_path[-1]:
                 return
-        self.__update_path_label()
+            # unselect last cell (current cell)
+            self.__curr_path.pop()  # update path
+            self.__curr_word_label.pop()  # update label
+            self.__gui.update_board(selected_loc, False)
+            self.__update_path_label()
+            return
 
-    def _handle_guess(self):
+        if not len(self.__curr_path) or _is_my_neighbor(selected_loc, self.__curr_path[-1]):
+            # if no length in self.__curr_path, or is_my_neighbor and can select
+            self.__curr_path.append(selected_loc)  # update path
+            self.__curr_word_label.append(cell_value)  # update label
+            self.__gui.update_board(selected_loc, True)
+            self.__update_path_label()
+        
+    def __handle_guess(self):
         word = is_valid_path(self.__board, self.__curr_path, self.__words)
         if not word:
             self.__gui.set_err_msg("not a valid word, sorry (:")

@@ -12,9 +12,9 @@ class ScreenGUI:
     this class will "route" between the home page and the single game page
     """
 
-    BG_COLOR = "lightblue"
+    BG_COLOR = "#bee3db"
 
-    def __init__(self, on_start_game ,on_selection, on_guess, on_reset):
+    def __init__(self, on_start_game, on_selection, on_guess, on_reset):
         self.__on_start_game = on_start_game
         self.root = None
         self.__init_root()
@@ -38,7 +38,8 @@ class ScreenGUI:
         self.root = root
 
     def __static_widgets(self):
-        title = tk.Label(self.root, font=("", 20), text="BOGGLE GAME! YAY", background=ScreenGUI.BG_COLOR)
+        title = tk.Label(self.root,
+                         font=("", 20), text="BOGGLE GAME! YAY☺️", background=ScreenGUI.BG_COLOR)
         title.pack(side=tk.TOP, pady=10)
 
         instructions = tk.Label(self.root, font=(

@@ -33,19 +33,25 @@ class SingleBoggleGameGUI():
         # self.__check_img = tk.PhotoImage(file="check.png")
         # self.__check_img = self.__check_img.subsample(20)
         self.__check_btn = tk.Button(self.root,
-                                    #  image=self.__check_img,
+                                     #  image=self.__check_img,
                                      borderwidth=0,
                                      highlightbackground=SingleBoggleGameGUI.BG_COLOR,
                                      activebackground=SingleBoggleGameGUI.BG_COLOR,
                                      bg=SingleBoggleGameGUI.BG_COLOR,
                                      command=self.__on_guess)
-        self.__check_img = None
-
         # reset button
-        self.__reset_btn = None
+        self.__reset_btn = tk.Button(self.root,
+                                    #  image=tk.PhotoImage(file="reset.png"),
+                                     command=on_reset,
+                                     borderwidth=0,
+                                     highlightbackground=SingleBoggleGameGUI.BG_COLOR,
+                                     activebackground=SingleBoggleGameGUI.BG_COLOR,
+                                     bg=SingleBoggleGameGUI.BG_COLOR)
 
         # correct words list:
-        self.__words_list_container = None
+        self.__words_list_container = tk.Frame(self.root,
+                                               bg=SingleBoggleGameGUI.BG_COLOR,
+                                               highlightthickness=1, highlightbackground="brown")
 
     def add_single_game(self, board):
         """adds all relevant widgets for a single boggle game
@@ -56,20 +62,19 @@ class SingleBoggleGameGUI():
         """
 
         self.__init_board(board)
-        
+
         # score label:
         self.__score_label.pack(pady=(10, 0))
-        
+
         # current path on top label:
         self.__curr_word_label.pack(side=tk.TOP, pady=10)
 
         # guess button:
-        
 
         self.__check_btn.pack()
 
         # reset button:
-        self.__reset_btn = tk.Button(self.root, text="-RESET-", bg="#631166", command=self.__on_reset).pack()
+        self.__reset_btn.pack()
 
         # correct words list:
         self.__init_words_list_container()
@@ -85,21 +90,22 @@ class SingleBoggleGameGUI():
                 loc = (i, j)
                 value = board[i][j]
                 is_selected = loc in self.__selected_cells
-                self.__board_buttons[loc] = tk.Button(board_container,
-                                                      text=value,
-                                                      font=("", 30),
-                                                      bg="#db3545" if is_selected else "#4ec78a",
-                                                      activebackground="#d9717c"if is_selected else "#90deb7",
-                                                      command=bind_values_to_func(self.__on_selection, value, (i, j)),
-                                                      )
+                self.__board_buttons[loc] = RoundedButton(parent=self.__board_frame,
+                                                          width=100,
+                                                          height=100,
+                                                          cornerradius=6,
+                                                          padding=2,
+                                                          color="#ffd6ba" if is_selected else "#89b0ae",
+                                                          active_color="#ffe7d6"if is_selected else "#b4dbd9",
+                                                          bg=SingleBoggleGameGUI.BG_COLOR,
+                                                          text_color="white",
+                                                          text=value,
+                                                          command=bind_values_to_func(self.__on_selection, value, i, j), )
 
-                self.__board_buttons[loc].grid_configure(columnspan=1, padx=5, pady=5)
-                self.__board_buttons[loc].grid(row=i, column=j)
+                # self.__board_buttons[loc].grid_configure(columnspan=1, padx=5, pady=5)
+                self.__board_buttons[loc].grid(row=i, column=j, pady=10, padx=10)
 
     def __init_words_list_container(self):
-        self.__words_list_container = tk.Frame(self.root)
-        self.__words_list_container.configure(bg=SingleBoggleGameGUI.BG_COLOR,
-                                              highlightthickness=1, highlightbackground="brown")
         self.__words_list_container.pack(side=tk.LEFT)
 
         words_list_title = tk.Label(self.__words_list_container, text="Correct words:", bg=SingleBoggleGameGUI.BG_COLOR)

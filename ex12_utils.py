@@ -240,7 +240,7 @@ def _does_have_duplicates(container):
 
 def bind_values_to_func(fn, *args, **kwargs):
     """
-        returns a function that calls given <fn> with given params 
+        returns a function that will call given <fn> with given params 
         (will pass the relevant information thanks to this closure)
         """
     return lambda: fn(*args, **kwargs)

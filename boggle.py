@@ -5,7 +5,10 @@ from boggle_board_randomizer import randomize_board
 
 class Boggle:
     def __init__(self):
-        self.__gui = ScreenGUI(on_start_game=self.__start_game)
+        self.__gui = ScreenGUI(on_start_game=self.__start_game,
+                               on_guess=self.__handle_guess,
+                               on_reset=self.___reset_selection,
+                               on_selection=self.__handle_cell_selection,)
 
         # init board:
         self.__board = []
@@ -27,10 +30,7 @@ class Boggle:
 
     def __start_game(self):
         self.__init_board()
-        self.__gui.init_game(self.__board,
-                             on_guess=self.__handle_guess,
-                             on_reset=self.___reset_selection,
-                             on_selection=self.__handle_cell_selection,)
+        self.__gui.start_game(self.__board)
         self.__init_words()
 
     def __init_board(self):
@@ -44,20 +44,20 @@ class Boggle:
     def __update_path_label(self):
         """update screen's current words path text
         """
-        self.__gui.update_curr_path_label("".join(self.__curr_word_label))
+        self.__gui.set_curr_path_label("".join(self.__curr_word_label))
 
     def __update_score(self):
         self.__gui.update_score_label(self.__score)
 
-    def __handle_cell_selection(self, cell_value, i, j):
+    def __handle_cell_selection(self, cell_value, selected_loc):
         """function to be called when user presses on a cell in boggle board
         available cells to click are only cells which are:
         neighbors of last selected cell, or the last selected cell itself
+        
         :param cell_value: {str} -- letter(s) value
         :param i: {int} -- row location
         :param j: {int} -- column location
         """
-        selected_loc = (i, j)
         if selected_loc in self.__curr_path:
             if selected_loc != self.__curr_path[-1]:
                 return
@@ -74,7 +74,7 @@ class Boggle:
             self.__curr_word_label.append(cell_value)  # update label
             self.__gui.update_board(selected_loc, True)
             self.__update_path_label()
-        
+
     def __handle_guess(self):
         word = is_valid_path(self.__board, self.__curr_path, self.__words)
         if not word:

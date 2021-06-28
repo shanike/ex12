@@ -26,8 +26,11 @@ class ScreenGUI:
         self.HomePageGUI = HomePageGUI(self.root, bg_color=ScreenGUI.BG_COLOR)
         self.HomePageGUI.add_home_page(self.__on_start_game)
 
-        self.SingleBoggleGameGUI = SingleBoggleGameGUI(
-            self.root, bg_color=ScreenGUI.BG_COLOR, on_selection=on_selection, on_reset=on_reset, on_guess=on_guess)
+        self.SingleBoggleGameGUI = SingleBoggleGameGUI(self.root,
+                                                       bg_color=ScreenGUI.BG_COLOR,
+                                                       on_selection=on_selection,
+                                                       on_reset=on_reset,
+                                                       on_guess=on_guess)
 
     def __init_root(self):
         root = tk.Tk()
@@ -35,7 +38,7 @@ class ScreenGUI:
 
         root.configure(background=ScreenGUI.BG_COLOR)
         w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-        root.geometry("%dx%d+0+0" % (w / 2, h))
+        root.geometry("%dx%d+0+0" % (w, h))
         self.root = root
 
     def __static_widgets(self):

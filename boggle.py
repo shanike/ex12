@@ -64,7 +64,10 @@ class Boggle:
             # unselect last cell (current cell)
             self.__curr_path.pop()  # update path
             self.__curr_word_label.pop()  # update label
-            self.__gui.update_board(selected_loc, False)
+            self.__gui.update_board(selected_loc, False,
+                                    prev_loc=None if len(self.__curr_path) < 1 else self.__curr_path[-1],
+                                    prev_loc_is_first=True
+                                    )
             self.__update_path_label()
             return
 
@@ -72,7 +75,10 @@ class Boggle:
             # if no length in self.__curr_path, or is_my_neighbor and can select
             self.__curr_path.append(selected_loc)  # update path
             self.__curr_word_label.append(cell_value)  # update label
-            self.__gui.update_board(selected_loc, True)
+            self.__gui.update_board(selected_loc, True,
+                                    prev_loc=None if len(self.__curr_path) < 2 else self.__curr_path[-2],  # second last
+                                    prev_loc_is_first=False  # to turn back to regular bg-color
+                                    )
             self.__update_path_label()
 
     def __handle_guess(self):

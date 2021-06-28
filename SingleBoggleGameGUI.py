@@ -6,6 +6,15 @@ from timer import Timer
 
 class SingleBoggleGameGUI:
 
+    UNSELECTED = "#89b0ae"
+    UNSELECTED_HOVER = "#b4dbd9"
+
+    SELECTED = "#D7C49E"
+    SELECTED_HOVER = "#C7D3D4"
+
+    FIRST = "#195190"
+    FIRST_HOVER = "#7b9acc"
+
     def __init__(self, root, bg_color, on_selection, on_reset, on_guess):
         """
             :param on_selection: {func} -- function to be called when user selects a cell on board. 
@@ -32,11 +41,10 @@ class SingleBoggleGameGUI:
                                           highlightbackground="brown", highlightthickness=1)
 
         # init board location:
-        self.__board_frame = tk.Frame(self.root, bd=5, relief="solid")
+        self.__board_frame = tk.Frame(self.root, background=SingleBoggleGameGUI.BG_COLOR)
         self.__board_frame.grid_columnconfigure(0, weight=1)
 
         self.__board_buttons = {}
-        self.__selected_cells = []
 
         # check button
         self.__check_img = tk.PhotoImage(file="check.png")
@@ -63,6 +71,7 @@ class SingleBoggleGameGUI:
         self.__words_list_container = tk.Frame(self.root,
                                                bg=SingleBoggleGameGUI.BG_COLOR,
                                                highlightthickness=1, highlightbackground="brown")
+        self.locations_to_reset = []
 
     def add_single_game(self, board):
         """adds all relevant widgets for a single boggle game
@@ -105,8 +114,8 @@ class SingleBoggleGameGUI:
                                                           height=100,
                                                           cornerradius=6,
                                                           padding=2,
-                                                          color="#89b0ae",
-                                                          active_color="#b4dbd9",
+                                                          color=SingleBoggleGameGUI.UNSELECTED,
+                                                          active_color=SingleBoggleGameGUI.UNSELECTED_HOVER,
                                                           bg=SingleBoggleGameGUI.BG_COLOR,
                                                           text_color="white",
                                                           text=value,
@@ -121,21 +130,42 @@ class SingleBoggleGameGUI:
         words_list_title = tk.Label(self.__words_list_container, text="Correct words:", bg=SingleBoggleGameGUI.BG_COLOR)
         words_list_title.pack()
 
-    def update_board(self, location, is_selected):
+    def update_board(self, location, is_selected, prev_loc, prev_loc_is_first):
+        print('location, is_selected: ', location, is_selected);
+        print('prev_loc: ', prev_loc);
+        print('prev_loc_is_first: ', prev_loc_is_first);
         self.__board_buttons[location] = RoundedButton(parent=self.__board_frame,
                                                        width=100,
                                                        height=100,
                                                        cornerradius=6,
                                                        padding=2,
-                                                       color="#ffd6ba" if is_selected else "#89b0ae",
-                                                       active_color="#ffe7d6" if is_selected else "#b4dbd9",
+                                                       color=SingleBoggleGameGUI.FIRST if is_selected else SingleBoggleGameGUI.UNSELECTED,
+                                                       active_color=SingleBoggleGameGUI.FIRST_HOVER if is_selected else SingleBoggleGameGUI.UNSELECTED_HOVER,
                                                        bg=SingleBoggleGameGUI.BG_COLOR,
                                                        text_color="white",
                                                        text=self.board[location[0]][location[1]],
+                                                       img_path="right.png",
                                                        command=bind_values_to_func(
                                                            self.__on_selection, self.board[location[0]][location[1]], location)
                                                        )
         self.__board_buttons[location].grid(row=location[0], column=location[1], pady=10, padx=10)
+
+        if prev_loc:  # reset color of prev selected button
+            self.__board_buttons[prev_loc] = RoundedButton(parent=self.__board_frame,
+                                                           width=100,
+                                                           height=100,
+                                                           cornerradius=6,
+                                                           padding=2,
+                                                           color=SingleBoggleGameGUI.FIRST if prev_loc_is_first else SingleBoggleGameGUI.SELECTED,
+                                                           active_color=SingleBoggleGameGUI.FIRST_HOVER if prev_loc_is_first else SingleBoggleGameGUI.SELECTED_HOVER,
+                                                           bg=SingleBoggleGameGUI.BG_COLOR,
+                                                           text_color="white",
+                                                           text=self.board[prev_loc[0]][prev_loc[1]],
+                                                           img_path="right.png",
+                                                           command=bind_values_to_func(
+                                                               self.__on_selection, self.board[prev_loc[0]][prev_loc[1]], prev_loc)
+                                                           )
+            self.__board_buttons[prev_loc].grid(row=prev_loc[0], column=prev_loc[1], pady=10, padx=10)
 
     def set_curr_path_label(self, text):
         """ sets <text> to be displayed in label at the top of the screen (the word guessing label)

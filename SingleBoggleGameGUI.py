@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import RIGHT
 from BorderRadius import RoundedButton
 from ex12_utils import bind_values_to_func
 from timer import Timer
@@ -6,7 +7,7 @@ from timer import Timer
 
 class SingleBoggleGameGUI:
 
-    def __init__(self, root, bg_color, on_selection, on_reset, on_guess):
+    def __init__(self, root, bg_color, on_selection, on_reset, on_guess, vh, vw):
         """
             :param on_selection: {func} -- function to be called when user selects a cell on board. 
             the function will get the value and the location of the selected cell
@@ -14,6 +15,7 @@ class SingleBoggleGameGUI:
         """
         SingleBoggleGameGUI.BG_COLOR = bg_color
 
+        self.vh, self.vw = vh, vw
         self.__on_selection = on_selection
         self.__on_reset = on_reset
         self.__on_guess = on_guess
@@ -44,6 +46,8 @@ class SingleBoggleGameGUI:
         self.__check_btn = tk.Button(self.root,
                                      image=self.__check_img,
                                      borderwidth=0,
+                                     text='submit',
+                                    #  bc='pink',
                                      highlightbackground=SingleBoggleGameGUI.BG_COLOR,
                                      activebackground=SingleBoggleGameGUI.BG_COLOR,
                                      bg=SingleBoggleGameGUI.BG_COLOR,
@@ -79,7 +83,7 @@ class SingleBoggleGameGUI:
 
         # guess button:
 
-        self.__check_btn.pack()
+        self.__check_btn.pack(side=RIGHT, padx=15, pady=20)
 
         # reset button:
         self.__reset_btn.pack()
@@ -101,8 +105,8 @@ class SingleBoggleGameGUI:
                 loc = (i, j)
                 value = self.board[i][j]
                 self.__board_buttons[loc] = RoundedButton(parent=self.__board_frame,
-                                                          width=100,
-                                                          height=100,
+                                                          width=self.vh(10),
+                                                          height=self.vw(4),
                                                           cornerradius=6,
                                                           padding=2,
                                                           color="#89b0ae",

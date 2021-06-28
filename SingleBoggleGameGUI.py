@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from BorderRadius import RoundedButton
+
 from ex12_utils import bind_values_to_func
 
 

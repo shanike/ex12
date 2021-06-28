@@ -30,7 +30,7 @@ class SingleBoggleGameGUI:
         self.root = root
 
         # init the timer
-        self.timer = Timer(self.root, 180)
+        self.__timer = Timer(self.root, 180)
 
         # score label:
         self.__score_label = tk.Label(self.root,
@@ -97,7 +97,7 @@ class SingleBoggleGameGUI:
         self.__init_words_list_container()
 
         # start the timer
-        self.timer.set_timer()
+        self.__timer.set_timer()
 
     def __init_board(self, board):
         self.board = board
@@ -131,9 +131,6 @@ class SingleBoggleGameGUI:
         words_list_title.pack()
 
     def update_board(self, location, is_selected, prev_loc, prev_loc_is_first):
-        print('location, is_selected: ', location, is_selected);
-        print('prev_loc: ', prev_loc);
-        print('prev_loc_is_first: ', prev_loc_is_first);
         self.__board_buttons[location] = RoundedButton(parent=self.__board_frame,
                                                        width=100,
                                                        height=100,
@@ -144,7 +141,6 @@ class SingleBoggleGameGUI:
                                                        bg=SingleBoggleGameGUI.BG_COLOR,
                                                        text_color="white",
                                                        text=self.board[location[0]][location[1]],
-                                                       img_path="right.png",
                                                        command=bind_values_to_func(
                                                            self.__on_selection, self.board[location[0]][location[1]], location)
                                                        )
@@ -161,7 +157,6 @@ class SingleBoggleGameGUI:
                                                            bg=SingleBoggleGameGUI.BG_COLOR,
                                                            text_color="white",
                                                            text=self.board[prev_loc[0]][prev_loc[1]],
-                                                           img_path="right.png",
                                                            command=bind_values_to_func(
                                                                self.__on_selection, self.board[prev_loc[0]][prev_loc[1]], prev_loc)
                                                            )

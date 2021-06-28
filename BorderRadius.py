@@ -20,7 +20,6 @@ class RoundedButton(tk.Canvas):
         self.text = text
         self.text_color = text_color
         self.command = command
-        self.img_path = img_path
         self.command = command
 
         if cornerradius > 0.5 * width:

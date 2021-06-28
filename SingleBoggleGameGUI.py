@@ -1,3 +1,4 @@
+from os import kill
 import tkinter as tk
 from tkinter import RIGHT
 from BorderRadius import RoundedButton
@@ -18,9 +19,14 @@ class SingleBoggleGameGUI:
 
     def __init__(self, root, bg_color, on_selection, on_reset, on_guess, on_time_up, vh, vw):
         """
+            :param bg_color: {str} -- hex color of screen's background color
             :param on_selection: {func} -- function to be called when user selects a cell on board. 
             the function will get the value and the location of the selected cell
-
+            :param on_reset: {func} -- function to be called when user clicks the reset button.
+            :param on_guess: {func} -- function to be called when user clicks the check button.
+            :param on_time_up: {func} -- function to be called when time is up, and game is supposed to be over.
+            :param vw: {int} -- screen's vw, for responsiveness (not really responsive tho).
+            :param vh: {int} -- screen's vh, for responsiveness (not really responsive tho).
         """
         SingleBoggleGameGUI.BG_COLOR = bg_color
 
@@ -32,7 +38,7 @@ class SingleBoggleGameGUI:
         self.root = root
 
         # init the timer
-        self.__timer = Timer(self.root, 3, on_time_up)
+        self.__timer = Timer(self.root, 180, on_time_up)
 
         # score label:
 
@@ -56,7 +62,7 @@ class SingleBoggleGameGUI:
                                      image=self.__check_img,
                                      borderwidth=0,
                                      text='submit',
-                                    #  bc='pink',
+                                     #  bc='pink',
                                      highlightbackground=SingleBoggleGameGUI.BG_COLOR,
                                      activebackground=SingleBoggleGameGUI.BG_COLOR,
                                      bg=SingleBoggleGameGUI.BG_COLOR,
@@ -76,7 +82,6 @@ class SingleBoggleGameGUI:
         self.__words_list_container = tk.Frame(self.root,
                                                bg=SingleBoggleGameGUI.BG_COLOR,
                                                highlightthickness=1, highlightbackground="brown")
-        self.locations_to_reset = []
 
     def add_single_game(self, board):
         """adds all relevant widgets for a single boggle game

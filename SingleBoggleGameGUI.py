@@ -185,9 +185,12 @@ class SingleBoggleGameGUI:
     def remove_single_game(self):
         self.__timer.remove_timer()
         self.__score_label.pack_forget()
-        self.set_curr_path_label("") # reset
+        self.set_curr_path_label("")  # reset
         self.__curr_word_label.pack_forget()
         self.__board_frame.pack_forget()
         self.__check_btn.pack_forget()
         self.__reset_btn.pack_forget()
         self.__words_list_container.pack_forget()
+        for btn in self.__board_buttons:
+            self.__board_buttons[btn].grid_remove()
+        self.__board_buttons = {}

@@ -31,7 +31,9 @@ class ScreenGUI:
                                                        on_selection=on_selection,
                                                        on_reset=on_reset,
                                                        on_guess=on_guess,
-                                                       on_time_up=on_time_up
+                                                       on_time_up=on_time_up,
+                                                       vh=self.vh,
+                                                       vw=self.vw
                                                        )
 
     def __init_root(self):
@@ -39,13 +41,15 @@ class ScreenGUI:
         root.wm_title("-- best game ever --")
 
         root.configure(background=ScreenGUI.BG_COLOR)
-        w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-        root.geometry("%dx%d+0+0" % (w, h))
+        self.w, self.h = root.winfo_screenwidth(), root.winfo_screenheight()
+        root.geometry("%dx%d+0+0" % (self.w / 2, self.h))
         self.root = root
 
     def __static_widgets(self):
         title = tk.Label(self.root,
-                         font=("", 20), text="BOGGLE GAME! YAY☺️", background=ScreenGUI.BG_COLOR)
+                         font=("", 20), text="BOGGLE GAME! YAY☺️", background=ScreenGUI.BG_COLOR,
+                         relief="groove"
+                         )
         title.pack(side=tk.TOP, pady=10)
 
         instructions = tk.Label(self.root, font=(
@@ -79,3 +83,9 @@ class ScreenGUI:
 
     def add_word_to_list(self, word):
         self.SingleBoggleGameGUI.add_word_to_list(word)
+
+    def vh(self, percent):
+        return int((percent * self.h) / 100)
+
+    def vw(self, percent):
+        return int((percent * self.w) / 100)

@@ -1,101 +1,93 @@
 from ex12_utils import _is_my_neighbor, calc_score, get_words, is_valid_path
 from ScreenGUI import ScreenGUI
 from boggle_board_randomizer import randomize_board
-from pprint import pprint
 
 
 class Boggle:
     def __init__(self):
-        self.__screen = ScreenGUI(on_guess=self._handle_guess, on_reset=self.___reset_selection)
+        self.__gui = ScreenGUI(on_start_game=self.__start_game,
+                               on_guess=self.__handle_guess,
+                               on_reset=self.___reset_selection,
+                               on_selection=self.__handle_cell_selection,)
 
         # init board:
         self.__board = []
-        self.__board_list = []
-        self.__init_board()
 
         # init words:
         self.__words = []
-        self.__init_words()
 
         # init curr path:
         self.__curr_path = []
-        self.__curr_path_label = []
+        self.__curr_word_label = []
 
         # init score:
         self.__score = 0
-        self.__update_score()
 
         # init correct words:
         self.__correct_words = []
 
-        self.start_game()
+        self.__gui.root.mainloop()
 
-    def start_game(self):
-        self.__screen.root.mainloop()
+    def __start_game(self):
+        self.__init_board()
+        self.__gui.start_game(self.__board)
+        self.__init_words()
 
     def __init_board(self):
-        board_list = randomize_board()
-        board_dict = []
-        for row in board_list:
-            board_dict.append([])
-            for col in row:
-                board_dict[-1].append({col: False})
-        self.__board = board_dict
-        self.__board_list = board_list
-        self.__update_board()
+        self.__board = randomize_board()
 
     def __init_words(self):
         """saves words from ./boggle_dict.txt file in __words list
         """
         self.__words = get_words('./boggle_dict.txt')
 
-    def __update_board(self):
-        """updates board
-        """
-        self.__screen.display_board(self.__board, self.handle_cell_selection)
-
     def __update_path_label(self):
         """update screen's current words path text
         """
-        self.__screen.update_curr_path_label("".join(self.__curr_path_label))
+        self.__gui.set_curr_path_label("".join(self.__curr_word_label))
 
     def __update_score(self):
-        self.__screen.update_score_label(self.__score)
+        self.__gui.update_score_label(self.__score)
 
-    def handle_cell_selection(self, cell_value, i, j):
-        selected_loc = (i, j)
-        if self.__board[i][j][cell_value]:
-            # unselect cell:
-            # todo check that path will be valid
-            self.__board[i][j][cell_value] = False  # update board
-            self.__curr_path.remove(selected_loc)  # update path
-            self.__curr_path_label.remove(cell_value)  # update label
+    def __handle_cell_selection(self, cell_value, selected_loc):
+        """function to be called when user presses on a cell in boggle board
+        available cells to click are only cells which are:
+        neighbors of last selected cell, or the last selected cell itself
+        
+        :param cell_value: {str} -- letter(s) value
+        :param i: {int} -- row location
+        :param j: {int} -- column location
+        """
+        if selected_loc in self.__curr_path:
+            if selected_loc != self.__curr_path[-1]:
+                return
+            # unselect last cell (current cell)
+            self.__curr_path.pop()  # update path
+            self.__curr_word_label.pop()  # update label
+            self.__gui.update_board(selected_loc, False)
             self.__update_path_label()
-            self.__update_board()
-        else:
-            if len(self.__curr_path) == 0 or _is_my_neighbor(selected_loc, self.__curr_path[-1]):
-                self.__board[i][j][cell_value] = True  # update board
-                self.__curr_path.append(selected_loc)  # update path
-                self.__curr_path_label.append(cell_value)  # update label
-                self.__update_path_label()
-                self.__update_board()
-            else:
-                print("not good")
-                self.__screen.set_err_msg("not neighbor")
+            return
 
-    def _handle_guess(self):
-        word = is_valid_path(self.__board_list, self.__curr_path, self.__words)
+        if not len(self.__curr_path) or _is_my_neighbor(selected_loc, self.__curr_path[-1]):
+            # if no length in self.__curr_path, or is_my_neighbor and can select
+            self.__curr_path.append(selected_loc)  # update path
+            self.__curr_word_label.append(cell_value)  # update label
+            self.__gui.update_board(selected_loc, True)
+            self.__update_path_label()
+
+    def __handle_guess(self):
+        word = is_valid_path(self.__board, self.__curr_path, self.__words)
         if not word:
-            self.__screen.set_err_msg("not a valid word, sorry (:")
+            self.__gui.set_err_msg("not a valid word, sorry (:")
         else:
             # found valid word:
-            if self.__curr_path_label in self.__correct_words:
-                self.__screen.set_err_msg("you correctly guessed this word already")
+            if self.__curr_word_label in self.__correct_words:
+                self.__gui.set_err_msg("you correctly guessed this word already")
                 return
-            
+
             # update correct words:
-            self.__correct_words.append(self.__curr_path_label)
-            self.__screen.add_word_to_list("".join(self.__curr_path_label))
+            self.__correct_words.append(self.__curr_word_label)
+            self.__gui.add_word_to_list("".join(self.__curr_word_label))
 
             # change & update score
             self.__score += calc_score(self.__curr_path)  # change score
@@ -106,12 +98,10 @@ class Boggle:
     def ___reset_selection(self):
 
         for loc in self.__curr_path:  # change board
-            val = list(self.__board[loc[0]][loc[1]].items())[0][0]
-            self.__board[loc[0]][loc[1]] = {val: False}
+            self.__gui.update_board(loc, False)
 
         self.__curr_path = []  # change path
-        self.__curr_path_label = []  # change word
-        self.__update_board()
+        self.__curr_word_label = []  # change word
         self.__update_path_label()
 
 

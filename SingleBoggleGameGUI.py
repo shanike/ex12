@@ -8,6 +8,11 @@ from ex12_utils import bind_values_to_func
 class SingleBoggleGameGUI():
 
     def __init__(self, root, bg_color, on_selection, on_reset, on_guess):
+        """
+            :param on_selection: {func} -- function to be called when user selects a cell on board. 
+            the function will get the value and the location of the selected cell
+
+        """
         SingleBoggleGameGUI.BG_COLOR = bg_color
 
         self.__on_selection = on_selection
@@ -32,23 +37,25 @@ class SingleBoggleGameGUI():
         self.__selected_cells = []
 
         # check button
-        # self.__check_img = tk.PhotoImage(file="check.png")
-        # self.__check_img = self.__check_img.subsample(20)
+        self.__check_img = tk.PhotoImage(file="check.png")
+        self.__check_img = self.__check_img.subsample(20)
         self.__check_btn = tk.Button(self.root,
-                                     #  image=self.__check_img,
+                                     image=self.__check_img,
                                      borderwidth=0,
                                      highlightbackground=SingleBoggleGameGUI.BG_COLOR,
                                      activebackground=SingleBoggleGameGUI.BG_COLOR,
                                      bg=SingleBoggleGameGUI.BG_COLOR,
-                                     command=self.__on_guess)
+                                     command=self.__on_guess
+                                     )
         # reset button
         self.__reset_btn = tk.Button(self.root,
-                                    #  image=tk.PhotoImage(file="reset.png"),
-                                     command=on_reset,
+                                     image=tk.PhotoImage(file="reset.png"),
                                      borderwidth=0,
                                      highlightbackground=SingleBoggleGameGUI.BG_COLOR,
                                      activebackground=SingleBoggleGameGUI.BG_COLOR,
-                                     bg=SingleBoggleGameGUI.BG_COLOR)
+                                     bg=SingleBoggleGameGUI.BG_COLOR,
+                                     command=self.__on_reset,
+                                     )
 
         # correct words list:
         self.__words_list_container = tk.Frame(self.root,
@@ -57,10 +64,7 @@ class SingleBoggleGameGUI():
 
     def add_single_game(self, board):
         """adds all relevant widgets for a single boggle game
-
             :param board: {[[str]]} -- 2d letter(s) board for boggle game
-            :param on_selection: {func} -- function to be called when user selects a cell on board. 
-            the function will get the value and the location of the selected cell
         """
 
         self.__init_board(board)
@@ -82,27 +86,26 @@ class SingleBoggleGameGUI():
         self.__init_words_list_container()
 
     def __init_board(self, board):
-
+        self.board = board
         self.__board_frame.pack()
-        self.__init_board_buttons(board, self.__board_frame)
+        self.__init_board_buttons()
 
-    def __init_board_buttons(self, board, board_container):
-        for i in range(len(board)):
-            for j in range(len(board[i])):
+    def __init_board_buttons(self):
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
                 loc = (i, j)
-                value = board[i][j]
-                is_selected = loc in self.__selected_cells
+                value = self.board[i][j]
                 self.__board_buttons[loc] = RoundedButton(parent=self.__board_frame,
                                                           width=100,
                                                           height=100,
                                                           cornerradius=6,
                                                           padding=2,
-                                                          color="#ffd6ba" if is_selected else "#89b0ae",
-                                                          active_color="#ffe7d6"if is_selected else "#b4dbd9",
+                                                          color="#89b0ae",
+                                                          active_color="#b4dbd9",
                                                           bg=SingleBoggleGameGUI.BG_COLOR,
                                                           text_color="white",
                                                           text=value,
-                                                          command=bind_values_to_func(self.__on_selection, value, i, j), )
+                                                          command=bind_values_to_func(self.__on_selection, value, (i, j)), )
 
                 # self.__board_buttons[loc].grid_configure(columnspan=1, padx=5, pady=5)
                 self.__board_buttons[loc].grid(row=i, column=j, pady=10, padx=10)
@@ -114,9 +117,20 @@ class SingleBoggleGameGUI():
         words_list_title.pack()
 
     def update_board(self, location, is_selected):
-        self.__board_buttons[location].configure(
-            bg="#db3545" if is_selected else "#4ec78a",
-            activebackground="#d9717c"if is_selected else "#90deb7",)
+        self.__board_buttons[location] = RoundedButton(parent=self.__board_frame,
+                                                       width=100,
+                                                       height=100,
+                                                       cornerradius=6,
+                                                       padding=2,
+                                                       color="#ffd6ba" if is_selected else "#89b0ae",
+                                                       active_color="#ffe7d6" if is_selected else "#b4dbd9",
+                                                       bg=SingleBoggleGameGUI.BG_COLOR,
+                                                       text_color="white",
+                                                       text=self.board[location[0]][location[1]],
+                                                       command=bind_values_to_func(
+                                                           self.__on_selection, self.board[location[0]][location[1]], location)
+                                                       )
+        self.__board_buttons[location].grid(row=location[0], column=location[1], pady=10, padx=10)
 
     def set_curr_path_label(self, text):
         """ sets <text> to be displayed in label at the top of the screen (the word guessing label)

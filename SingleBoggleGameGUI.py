@@ -1,11 +1,10 @@
 import tkinter as tk
-
 from BorderRadius import RoundedButton
-
 from ex12_utils import bind_values_to_func
+from timer import Timer
 
 
-class SingleBoggleGameGUI():
+class SingleBoggleGameGUI:
 
     def __init__(self, root, bg_color, on_selection, on_reset, on_guess):
         """
@@ -20,6 +19,9 @@ class SingleBoggleGameGUI():
         self.__on_guess = on_guess
 
         self.root = root
+
+        # init the timer
+        self.timer = Timer(self.root, 180)
 
         # score label:
         self.__score_label = tk.Label(self.root,
@@ -84,6 +86,9 @@ class SingleBoggleGameGUI():
 
         # correct words list:
         self.__init_words_list_container()
+
+        # start the timer
+        self.timer.set_timer()
 
     def __init_board(self, board):
         self.board = board

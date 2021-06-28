@@ -1,7 +1,7 @@
 import tkinter as tk
 
 
-class HomePageGUI():
+class HomePageGUI:
 
     def __init__(self, root, bg_color):
         HomePageGUI.BG_COLOR = bg_color
@@ -25,5 +25,3 @@ class HomePageGUI():
     
     def remove_home_page(self):
         self.__remove_score_table()
-    
-

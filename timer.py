@@ -7,10 +7,11 @@ class Timer:
         self.parent = parent
         self.count = count
         # setting the default value as 0
-        self.minute = StringVar("03")
-        self.second = StringVar("00")
+        self.minute = StringVar(self.parent, "03") # todo set afterward or now? 
+        self.second = StringVar(self.parent, "00") # todo set afterward or now? 
 
     def set_timer(self):
+
         # set labels
         minute_label = Label(self.parent, width=3, font=("Arial", 18, ""),
                              textvariable=self.minute, bg="#ffd6ba", foreground="white")

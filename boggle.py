@@ -8,7 +8,8 @@ class Boggle:
         self.__gui = ScreenGUI(on_start_game=self.__start_game,
                                on_guess=self.__handle_guess,
                                on_reset=self.___reset_selection,
-                               on_selection=self.__handle_cell_selection,)
+                               on_selection=self.__handle_cell_selection,
+                               on_time_up=self.__handle_time_up)
 
         # init board:
         self.__board = []
@@ -109,6 +110,28 @@ class Boggle:
         self.__curr_path = []  # change path
         self.__curr_word_label = []  # change word
         self.__update_path_label()
+
+    def __handle_time_up(self):
+        """
+        game over, reset all variables and call home page
+        """
+        # reset board:
+        self.__board = []
+
+        # reset words:
+        self.__words = []
+
+        # reset curr path:
+        self.__curr_path = []
+        self.__curr_word_label = []
+
+        # reset score:
+        self.__score = 0
+
+        # reset correct words:
+        self.__correct_words = []
+
+        self.__gui.start_again(self.__score)
 
 
 if __name__ == "__main__":

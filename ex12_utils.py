@@ -1,4 +1,5 @@
-from constants import NEIGHBORS, FOUNT_MAX_FOR_WORD
+from constants import NEIGHBORS, FOUNT_MAX_FOR_WORD, PLAYER_NAMES
+from random import randint
 
 
 def is_valid_path(board, path, words):
@@ -73,7 +74,8 @@ def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, curr_w
             continue
         new_word = curr_word + _get_letter(board, new_loc)
 
-        _find_length_n_paths_helper(n, board, {word for word in words if word.startswith(curr_word)}, new_loc, paths, curr_path + [new_loc], new_word)
+        _find_length_n_paths_helper(n, board, {word for word in words if word.startswith(
+            curr_word)}, new_loc, paths, curr_path + [new_loc], new_word)
 
 
 def find_length_n_words(n, board, words):
@@ -238,6 +240,8 @@ def _does_have_duplicates(container):
 #                                        #
 ##########################################
 
+# todo move to boggle-utils.py file
+
 def bind_values_to_func(fn, *args, **kwargs):
     """
         returns a function that will call given <fn> with given params 
@@ -248,3 +252,7 @@ def bind_values_to_func(fn, *args, **kwargs):
 
 def calc_score(correct_path):
     return len(correct_path)**2
+
+
+def get_random_name():
+    return PLAYER_NAMES[randint(0, len(PLAYER_NAMES) - 1)]

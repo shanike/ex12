@@ -15,7 +15,7 @@ class SingleBoggleGameGUI:
     FIRST = "#195190"
     FIRST_HOVER = "#7b9acc"
 
-    def __init__(self, root, bg_color, on_selection, on_reset, on_guess):
+    def __init__(self, root, bg_color, on_selection, on_reset, on_guess, on_time_up):
         """
             :param on_selection: {func} -- function to be called when user selects a cell on board. 
             the function will get the value and the location of the selected cell
@@ -30,9 +30,10 @@ class SingleBoggleGameGUI:
         self.root = root
 
         # init the timer
-        self.__timer = Timer(self.root, 180)
+        self.__timer = Timer(self.root, 3, on_time_up)
 
         # score label:
+
         self.__score_label = tk.Label(self.root,
                                       font=("", 16), background=SingleBoggleGameGUI.BG_COLOR,
                                       highlightbackground="blue", highlightthickness=2)
@@ -172,8 +173,17 @@ class SingleBoggleGameGUI:
         self.__score_label.configure(text="score: " + str(new_score))
 
     def add_word_to_list(self, word):
-        word_label = tk.Label(self.__words_list_container,
-                              font=("", 14), background=SingleBoggleGameGUI.BG_COLOR,
-                              text=word
-                              )
-        word_label.pack()
+        tk.Label(self.__words_list_container,
+                 font=("", 14), background=SingleBoggleGameGUI.BG_COLOR,
+                 text=word
+                 ).pack()
+
+    def remove_single_game(self):
+        self.__timer.remove_timer()
+        self.__score_label.pack_forget()
+        self.set_curr_path_label("") # reset
+        self.__curr_word_label.pack_forget()
+        self.__board_frame.pack_forget()
+        self.__check_btn.pack_forget()
+        self.__reset_btn.pack_forget()
+        self.__words_list_container.pack_forget()

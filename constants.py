@@ -13,3 +13,6 @@ NEIGHBORS = [
 
 
 FOUNT_MAX_FOR_WORD = 'FOUNT_MAX_FOR_WORD'
+
+
+PLAYER_NAMES = ["Harry P", "Luke S", "Adi", "Guy", "Ziv", "Phoebe B", "Ted M"]

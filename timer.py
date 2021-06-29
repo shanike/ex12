@@ -1,5 +1,5 @@
-from tkinter import *
-from tkinter import messagebox
+from tkinter import Label, StringVar, messagebox
+from tkinter.constants import LEFT, RIGHT
 
 
 class Timer:
@@ -20,9 +20,9 @@ class Timer:
         """renders timer elements to the screen
         """
         # set labels
-        self.__minute_label.place(x=130, y=20)
+        self.__minute_label.pack(side=LEFT)
 
-        self.__second_label.place(x=180, y=20)
+        self.__second_label.pack(side=RIGHT)
 
         self.__countdown(self.__count)
 

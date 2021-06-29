@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import messagebox
-from tkinter import PhotoImage
+from tkinter import font
+from tkinter.constants import BOTTOM, TOP
 
 from SingleBoggleGameGUI import SingleBoggleGameGUI
 from HomePageGUI import HomePageGUI
 
-from ex12_utils import bind_values_to_func, get_random_name
+from boggle_utils import get_random_name
 
 
 class ScreenGUI:
@@ -15,28 +16,32 @@ class ScreenGUI:
 
     BG_COLOR = "#F8EDEB"
 
-    ROOT_WIDTH = 1200
-    ROOT_HEIGHT = 700
-
     def __init__(self, on_start_game, on_selection, on_guess, on_reset, on_time_up):
         self.__on_start_game = on_start_game
+
         self.root = None
         self.__init_root()
 
-        # create background and static stuff:
-        self.__static_widgets()
+        self.__game_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR, width=ScreenGUI.ROOT_HEIGHT)
 
-        self.HomePageGUI = HomePageGUI(self.root, bg_color=ScreenGUI.BG_COLOR)
+        self.__top_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
+        self.__top_container.pack(side=TOP)
+        # create background and static stuff:
+        self.__init_top_widgets(self.__top_container)
+
+        self.__home_page_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
+        self.__home_page_container.pack()
+        self.HomePageGUI = HomePageGUI(self.__home_page_container, bg_color=ScreenGUI.BG_COLOR)
         self.HomePageGUI.add_home_page(self.__on_start_game)
 
-        self.SingleBoggleGameGUI = SingleBoggleGameGUI(self.root,
+        self.SingleBoggleGameGUI = SingleBoggleGameGUI(self.__game_container,
                                                        bg_color=ScreenGUI.BG_COLOR,
                                                        on_selection=on_selection,
                                                        on_reset=on_reset,
                                                        on_guess=on_guess,
                                                        on_time_up=on_time_up,
-                                                       vh=self.vh,
-                                                       vw=self.vw
+                                                       vh_func=self.vh_func,
+                                                       vw_func=self.vw_func
                                                        )
 
     def __init_root(self):
@@ -45,32 +50,42 @@ class ScreenGUI:
 
         root.configure(background=ScreenGUI.BG_COLOR)
         self.w, self.h = root.winfo_screenwidth(), root.winfo_screenheight()
-        root.geometry("%dx%d+0+0" % (ScreenGUI.ROOT_WIDTH, ScreenGUI.ROOT_HEIGHT))
+        root.geometry("%dx%d+0+0" % (self.w, self.h))
         self.root = root
 
-    def __static_widgets(self):
-        title = tk.Label(self.root,
+    def __init_top_widgets(self, parent):
+        title = tk.Label(parent,
                          font=("", 28, "bold"),
                          text="BOGGLE GAME! yay! ☺️",
                          background=ScreenGUI.BG_COLOR,
                          )
         title.pack(side=tk.TOP, pady=(30, 5))
 
-        instructions = tk.Label(self.root, font=(
+        slogen = tk.Label(parent,
+                          font=("", 10,),
+                          text="תפזורת - אבל מותר לשנות כיוון במסלול 😉"[::-1],
+                          background=ScreenGUI.BG_COLOR)
+        slogen.pack()
+
+        instructions = tk.Label(parent, font=(
             "", 16, "italic"), text="find as many words as you can:", background=ScreenGUI.BG_COLOR)
         instructions.pack(side=tk.TOP, pady=(0, 40))
 
-    def start_again(self, score):
+    def end_game(self, score):
         """
-        handle game finished, bring home page back 
+        handle game finished, bring home page back and remove single game 
         (with new player score)
         """
         self.SingleBoggleGameGUI.remove_single_game()
+        self.__game_container.pack_forget()  # must be after remove_single_game()
         self.HomePageGUI.add_home_page(self.__on_start_game, is_launch=False,
                                        player_name=get_random_name(), player_score=score)
+        self.__home_page_container.pack()
 
     def start_game(self, board):
+        self.__game_container.pack(side=BOTTOM, expand=True)
         self.HomePageGUI.remove_home_page()
+        self.__home_page_container.pack_forget()
         self.SingleBoggleGameGUI.add_single_game(board)
 
     def set_curr_path_label(self, text):
@@ -88,8 +103,22 @@ class ScreenGUI:
     def add_word_to_list(self, word):
         self.SingleBoggleGameGUI.add_word_to_list(word)
 
-    def vh(self, percent):
+    def vh_func(self, percent):
+        """utils function for gui. converts height percent values to pxs
+
+            :param percent: {int}
+
+        Returns:
+            int -- pxs
+        """
         return int((percent * self.h) / 100)
 
-    def vw(self, percent):
+    def vw_func(self, percent):
+        """utils function for gui. converts width percent values to pxs
+
+            :param percent: {int}
+
+        Returns:
+            int -- pxs
+        """
         return int((percent * self.w) / 100)

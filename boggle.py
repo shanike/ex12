@@ -1,4 +1,5 @@
-from ex12_utils import _is_my_neighbor, calc_score, get_words, is_valid_path
+from ex12_utils import _is_my_neighbor, get_words, is_valid_path
+from boggle_utils import calc_score
 from ScreenGUI import ScreenGUI
 from boggle_board_randomizer import randomize_board
 
@@ -20,6 +21,7 @@ class Boggle:
         # init curr path:
         self.__curr_path = []
         self.__curr_word_label = []
+        self.__curr_word = []
 
         # init score:
         self.__score = 0
@@ -85,11 +87,12 @@ class Boggle:
     def __handle_guess(self):
         word = is_valid_path(self.__board, self.__curr_path, self.__words)
         if not word:
+            self.___reset_selection()
             self.__gui.set_err_msg("not a valid word, sorry (:")
         else:
             # found valid word:
             if self.__curr_word_label in self.__correct_words:
-                self.__gui.set_err_msg("you correctly guessed this word already")
+                self.__gui.set_err_msg("you correctly guessed this path before")
                 return
 
             # update correct words:
@@ -116,7 +119,7 @@ class Boggle:
         """
         game over, reset all variables and call home page
         """
-        self.__gui.start_again(self.__score)
+        self.__gui.end_game(self.__score)
 
         # reset board:
         self.__board = []
@@ -127,13 +130,13 @@ class Boggle:
         # reset curr path:
         self.__curr_path = []
         self.__curr_word_label = []
+        self.__correct_paths = []
 
         # reset score:
         self.__score = 0
 
         # reset correct words:
         self.__correct_words = []
-
 
 
 if __name__ == "__main__":

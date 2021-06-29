@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import RIGHT
-from BorderRadius import RoundedButton
-from ex12_utils import bind_values_to_func
+from tkinter.constants import BOTTOM, LEFT, N, NE, TOP, TRUE
+from RoundedButton import RoundedButton
+from boggle_utils import bind_values_to_func
 from timer import Timer
 
 
@@ -17,106 +18,124 @@ class SingleBoggleGameGUI:
         "HEAD": "#195190",
         "HEAD_HOVER": "#5294e0",
     }
+    LEFT_BG_COLOR = "#195190"
+    RIGHT_BG_COLOR = "#195190"
     TIMER_SEC = 180
 
-    def __init__(self, root, bg_color, on_selection, on_reset, on_guess, on_time_up, vh, vw):
+    def __init__(self, parent, bg_color, on_selection, on_reset, on_guess, on_time_up, vh_func, vw_func):
         """
             :param bg_color: {str} -- hex color of screen's background color
-            :param on_selection: {func} -- function to be called when user selects a cell on board. 
+            :param on_selection: {func} -- function to be called when user selects a cell on board.
             the function will get the value and the location of the selected cell
             :param on_reset: {func} -- function to be called when user clicks the reset button.
             :param on_guess: {func} -- function to be called when user clicks the check button.
             :param on_time_up: {func} -- function to be called when time is up, and game is supposed to be over.
-            :param vw: {int} -- screen's vw, for responsiveness (not really responsive tho).
-            :param vh: {int} -- screen's vh, for responsiveness (not really responsive tho).
+            :param vh_func: {func} -- convert hight percents to numbers that can be used for Tk (px?)
+            :param vw_func: {func} -- convert width percents to numbers that can be used for Tk (px?)
         """
         SingleBoggleGameGUI.BG_COLOR = bg_color
 
-        self.vh, self.vw = vh, vw
-        self.cube_width = self.vw(5)
-        self.cube_height = self.vh(8)
+        self.vh_func, self.vw_func = vh_func, vw_func
+        self.__cube_width = self.vw_func(5)
+        self.__cube_height = self.vh_func(8)
         self.__on_selection = on_selection
         self.__on_reset = on_reset
         self.__on_guess = on_guess
 
-        self.root = root
+        self.__parent = parent
 
-        # init the timer
-        self.__timer = Timer(self.root, SingleBoggleGameGUI.TIMER_SEC, on_time_up)
-
-        # score label:
-
-        self.__score_label = tk.Label(self.root,
-                                      font=("", 16), background=SingleBoggleGameGUI.BG_COLOR,
-                                      highlightbackground="blue", highlightthickness=2)
-        # current path on top label:
-        self.__curr_word_label = tk.Label(self.root, font=("", 30), background="lightgrey", width=10,
-                                          highlightbackground="brown", highlightthickness=1)
-
-        # init board location:
-        self.__board_frame = tk.Frame(self.root, background=SingleBoggleGameGUI.BG_COLOR)
-        self.__board_frame.grid_columnconfigure(0, weight=1)
-
-        self.__board_buttons = {}
-
+        #: right side:
+        self.__right_side_fr = tk.Frame(
+            self.__parent, background=SingleBoggleGameGUI.BG_COLOR)
         # check button
-        self.__check_img = tk.PhotoImage(file="check.png")
-        self.__check_img = self.__check_img.subsample(20)
-        self.__check_btn = tk.Button(self.root,
-                                     image=self.__check_img,
+        self.__check_btn = tk.Button(self.__right_side_fr,
                                      borderwidth=0,
                                      text='submit',
-                                     highlightbackground=SingleBoggleGameGUI.BG_COLOR,
-                                     activebackground=SingleBoggleGameGUI.BG_COLOR,
-                                     bg=SingleBoggleGameGUI.BG_COLOR,
+                                     font=("", 22, "bold"),
+                                     highlightbackground=SingleBoggleGameGUI.RIGHT_BG_COLOR,
+                                     activebackground=SingleBoggleGameGUI.RIGHT_BG_COLOR,
+                                     background=SingleBoggleGameGUI.RIGHT_BG_COLOR,
+                                     foreground="white",
+                                     activeforeground="white",
                                      command=self.__on_guess
                                      )
         # reset button
-        self.__reset_btn = tk.Button(self.root,
-                                     image=tk.PhotoImage(file="reset.png"),
+        self.__reset_btn = tk.Button(self.__right_side_fr,
                                      borderwidth=0,
-                                     highlightbackground=SingleBoggleGameGUI.BG_COLOR,
-                                     activebackground=SingleBoggleGameGUI.BG_COLOR,
-                                     bg=SingleBoggleGameGUI.BG_COLOR,
+                                     text='reset',
+                                     font=("", 22, "bold"),
+                                     highlightbackground=SingleBoggleGameGUI.RIGHT_BG_COLOR,
+                                     activebackground=SingleBoggleGameGUI.RIGHT_BG_COLOR,
+                                     background=SingleBoggleGameGUI.RIGHT_BG_COLOR,
+                                     foreground="white",
+                                     activeforeground="white",
                                      command=self.__on_reset,
                                      )
+        #: center:
+        self.__center_fr = tk.Frame(self.__parent, background=SingleBoggleGameGUI.BG_COLOR, width=self.vw_func(50))
+        # create timer obj:
+        self.__timer_container = tk.Frame(self.__center_fr, background="green")
+        self.__timer = Timer(self.__timer_container, SingleBoggleGameGUI.TIMER_SEC, on_time_up)
+        # init board location:
+        self.__board_frame = tk.Frame(self.__center_fr, background=SingleBoggleGameGUI.BG_COLOR)
+        self.__board_frame.grid_columnconfigure(0, weight=1)
+        # current path label:
+        self.__curr_word_label = tk.Label(self.__center_fr, font=("", 30), background="lightgrey", width=10)
+        self.__board_buttons = {}
 
+        #: left side:
+        self.__left_side_fr = tk.Frame(self.__parent,
+                                       background=SingleBoggleGameGUI.LEFT_BG_COLOR, width=self.vw_func(25))
+        # score label:
+        self.__score_label = tk.Label(self.__left_side_fr,
+                                      font=("", 22, "bold"), background=SingleBoggleGameGUI.LEFT_BG_COLOR, foreground="white",
+                                      text="score: 0")
         # correct words list:
-        self.__words_list_container = tk.Frame(self.root,
-                                               bg=SingleBoggleGameGUI.BG_COLOR,
-                                               highlightthickness=1, highlightbackground="brown")
+        self.__words_list_container = tk.Frame(self.__left_side_fr,
+                                               background=SingleBoggleGameGUI.LEFT_BG_COLOR,)
 
     def add_single_game(self, board):
         """adds all relevant widgets for a single boggle game
             :param board: {[[str]]} -- 2d letter(s) board for boggle game
         """
 
+        #: init right side:
+        self.__init_right_side()
+        #: init center:
+        self.__init_center(board)
+        #: init left side:
+        self.__init_left_side()
+
+    def __init_right_side(self):
+        self.__right_side_fr.grid(padx=(100), column=5, row=1)
+        # guess button:
+        self.__check_btn.pack(side=TOP, pady=(10))
+        # reset button:
+        self.__reset_btn.pack(side=BOTTOM)
+
+    def __init_center(self, board):
+        self.__center_fr.grid(padx=(100), column=2, row=1, columnspan=3)
+
+        # start the timer
+        self.__timer_container.pack(side=TOP)
+        self.__timer.init_timer()
+        # board
         self.__init_board(board)
-
-        # score label:
-        self.__score_label.pack(pady=(10, 0))
-
         # current path on top label:
         self.__curr_word_label.pack(side=tk.TOP, pady=10)
 
-        # guess button:
-
-        self.__check_btn.pack(side=RIGHT, padx=15, pady=20)
-        # self.__check_btn.place(x=100, y=25)
-        # reset button:
-        self.__reset_btn.pack()
-
+    def __init_left_side(self):
+        self.__left_side_fr.grid(padx=(100), column=1, row=1)
+        # score label:
+        self.__score_label.pack(side=TOP)
         # correct words list:
         self.__init_words_list_container()
-
-        # start the timer
-        self.__timer.init_timer()
 
     def __init_board(self, board):
         """renders board Frame and calls init board buttons
         """
         self.board = board
-        self.__board_frame.pack()
+        self.__board_frame.pack(side=TOP, anchor=N)
         self.__init_board_buttons()
 
     def __init_board_buttons(self):
@@ -127,8 +146,8 @@ class SingleBoggleGameGUI:
                 loc = (i, j)
                 value = self.board[i][j]
                 self.__board_buttons[loc] = RoundedButton(parent=self.__board_frame,
-                                                          width=self.cube_width,
-                                                          height=self.cube_height,
+                                                          width=self.__cube_width,
+                                                          height=self.__cube_height,
                                                           cornerradius=6,
                                                           padding=2,
                                                           color=SingleBoggleGameGUI.CELL_COLORS["UNSELECTED"],
@@ -144,9 +163,14 @@ class SingleBoggleGameGUI:
     def __init_words_list_container(self):
         """renders correct words list Frame
         """
-        self.__words_list_container.pack(side=tk.LEFT)
+        self.__words_list_container.pack(side=TOP, pady=(30, 0), expand=True)
 
-        words_list_title = tk.Label(self.__words_list_container, text="Correct words:", bg=SingleBoggleGameGUI.BG_COLOR)
+        words_list_title = tk.Label(self.__words_list_container,
+                                    font=("", 16),
+                                    text="Correct words:",
+                                    background=SingleBoggleGameGUI.LEFT_BG_COLOR,
+                                    foreground="white"
+                                    )
         words_list_title.pack()
 
     def update_board(self, location, is_selected, prev_loc=None, prev_loc_is_first=None):
@@ -160,8 +184,8 @@ class SingleBoggleGameGUI:
             prev_loc_is_first {bool} -- whether to color the previous cell with the selected color, or the "head cell" color (default: {None})
         """
         self.__board_buttons[location] = RoundedButton(parent=self.__board_frame,
-                                                       width=self.cube_width,
-                                                       height=self.cube_height,
+                                                       width=self.__cube_width,
+                                                       height=self.__cube_height,
                                                        cornerradius=6,
                                                        padding=2,
                                                        color=SingleBoggleGameGUI.CELL_COLORS["HEAD"] if is_selected else SingleBoggleGameGUI.CELL_COLORS["UNSELECTED"],
@@ -177,8 +201,8 @@ class SingleBoggleGameGUI:
 
         if prev_loc:  # reset color of prev selected button
             self.__board_buttons[prev_loc] = RoundedButton(parent=self.__board_frame,
-                                                           width=self.cube_width,
-                                                           height=self.cube_height,
+                                                           width=self.__cube_width,
+                                                           height=self.__cube_height,
                                                            cornerradius=6,
                                                            padding=2,
                                                            color=SingleBoggleGameGUI.CELL_COLORS[
@@ -212,7 +236,7 @@ class SingleBoggleGameGUI:
             :param word: {str} -- word to add
         """
         tk.Label(self.__words_list_container,
-                 font=("", 14), background=SingleBoggleGameGUI.BG_COLOR,
+                 font=("", 14), background=SingleBoggleGameGUI.LEFT_BG_COLOR, foreground="white",
                  text=word
                  ).pack()
 
@@ -233,3 +257,13 @@ class SingleBoggleGameGUI:
         for btn in self.__board_buttons:
             self.__board_buttons[btn].grid_remove()
         self.__board_buttons = {}
+
+        for left_elem in self.__left_side_fr.slaves():
+            left_elem.pack_forget()
+        for right_elem in self.__right_side_fr.slaves():
+            right_elem.pack_forget()
+        for center_item in self.__center_fr.slaves():
+            center_item.pack_forget()
+        self.__left_side_fr.grid_forget()
+        self.__right_side_fr.grid_forget()
+        self.__center_fr.grid_forget()

@@ -1,5 +1,4 @@
 from constants import NEIGHBORS, FOUNT_MAX_FOR_WORD, PLAYER_NAMES
-from random import randint
 
 
 def is_valid_path(board, path, words):
@@ -233,26 +232,3 @@ def _does_have_duplicates(container):
     """
     return len(set(container)) != len(container)
 
-
-##########################################
-#                                        #
-#      utils, used in other files:       #
-#                                        #
-##########################################
-
-# todo move to boggle-utils.py file
-
-def bind_values_to_func(fn, *args, **kwargs):
-    """
-        returns a function that will call given <fn> with given params 
-        (will pass the relevant information thanks to this closure)
-        """
-    return lambda: fn(*args, **kwargs)
-
-
-def calc_score(correct_path):
-    return len(correct_path)**2
-
-
-def get_random_name():
-    return PLAYER_NAMES[randint(0, len(PLAYER_NAMES) - 1)]

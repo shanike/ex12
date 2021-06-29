@@ -16,15 +16,18 @@ class SingleBoggleGameGUI:
     FIRST = "#195190"
     FIRST_HOVER = "#7b9acc"
 
+    TIMER = 180
+
     def __init__(self, root, bg_color, on_selection, on_reset, on_guess, on_time_up, vh, vw):
         """
             :param on_selection: {func} -- function to be called when user selects a cell on board. 
             the function will get the value and the location of the selected cell
-
         """
         SingleBoggleGameGUI.BG_COLOR = bg_color
 
         self.vh, self.vw = vh, vw
+        self.cube_width = self.vw(5)
+        self.cube_height = self.vh(8)
         self.__on_selection = on_selection
         self.__on_reset = on_reset
         self.__on_guess = on_guess
@@ -32,7 +35,7 @@ class SingleBoggleGameGUI:
         self.root = root
 
         # init the timer
-        self.__timer = Timer(self.root, 3, on_time_up)
+        self.__timer = Timer(self.root, SingleBoggleGameGUI.TIMER, on_time_up)
 
         # score label:
 
@@ -56,7 +59,6 @@ class SingleBoggleGameGUI:
                                      image=self.__check_img,
                                      borderwidth=0,
                                      text='submit',
-                                    #  bc='pink',
                                      highlightbackground=SingleBoggleGameGUI.BG_COLOR,
                                      activebackground=SingleBoggleGameGUI.BG_COLOR,
                                      bg=SingleBoggleGameGUI.BG_COLOR,
@@ -94,7 +96,7 @@ class SingleBoggleGameGUI:
         # guess button:
 
         self.__check_btn.pack(side=RIGHT, padx=15, pady=20)
-
+        # self.__check_btn.place(x=100, y=25)
         # reset button:
         self.__reset_btn.pack()
 
@@ -115,8 +117,8 @@ class SingleBoggleGameGUI:
                 loc = (i, j)
                 value = self.board[i][j]
                 self.__board_buttons[loc] = RoundedButton(parent=self.__board_frame,
-                                                          width=self.vh(10),
-                                                          height=self.vw(4),
+                                                          width=self.cube_width,
+                                                          height=self.cube_height,
                                                           cornerradius=6,
                                                           padding=2,
                                                           color=SingleBoggleGameGUI.UNSELECTED,
@@ -137,8 +139,8 @@ class SingleBoggleGameGUI:
 
     def update_board(self, location, is_selected, prev_loc, prev_loc_is_first):
         self.__board_buttons[location] = RoundedButton(parent=self.__board_frame,
-                                                       width=100,
-                                                       height=100,
+                                                       width=self.cube_width,
+                                                       height=self.cube_height,
                                                        cornerradius=6,
                                                        padding=2,
                                                        color=SingleBoggleGameGUI.FIRST if is_selected else SingleBoggleGameGUI.UNSELECTED,
@@ -153,8 +155,8 @@ class SingleBoggleGameGUI:
 
         if prev_loc:  # reset color of prev selected button
             self.__board_buttons[prev_loc] = RoundedButton(parent=self.__board_frame,
-                                                           width=100,
-                                                           height=100,
+                                                           width=self.cube_width,
+                                                           height=self.cube_height,
                                                            cornerradius=6,
                                                            padding=2,
                                                            color=SingleBoggleGameGUI.FIRST if prev_loc_is_first else SingleBoggleGameGUI.SELECTED,
@@ -185,7 +187,7 @@ class SingleBoggleGameGUI:
     def remove_single_game(self):
         self.__timer.remove_timer()
         self.__score_label.pack_forget()
-        self.set_curr_path_label("") # reset
+        self.set_curr_path_label("")  # reset
         self.__curr_word_label.pack_forget()
         self.__board_frame.pack_forget()
         self.__check_btn.pack_forget()

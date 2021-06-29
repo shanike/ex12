@@ -33,6 +33,8 @@ class SingleBoggleGameGUI:
         SingleBoggleGameGUI.BG_COLOR = bg_color
 
         self.vh, self.vw = vh, vw
+        self.cube_width = self.vw(5)
+        self.cube_height = self.vh(8)
         self.__on_selection = on_selection
         self.__on_reset = on_reset
         self.__on_guess = on_guess
@@ -64,7 +66,6 @@ class SingleBoggleGameGUI:
                                      image=self.__check_img,
                                      borderwidth=0,
                                      text='submit',
-                                     #  bc='pink',
                                      highlightbackground=SingleBoggleGameGUI.BG_COLOR,
                                      activebackground=SingleBoggleGameGUI.BG_COLOR,
                                      bg=SingleBoggleGameGUI.BG_COLOR,
@@ -101,7 +102,7 @@ class SingleBoggleGameGUI:
         # guess button:
 
         self.__check_btn.pack(side=RIGHT, padx=15, pady=20)
-
+        # self.__check_btn.place(x=100, y=25)
         # reset button:
         self.__reset_btn.pack()
 
@@ -126,8 +127,8 @@ class SingleBoggleGameGUI:
                 loc = (i, j)
                 value = self.board[i][j]
                 self.__board_buttons[loc] = RoundedButton(parent=self.__board_frame,
-                                                          width=self.vh(10),
-                                                          height=self.vw(4),
+                                                          width=self.cube_width,
+                                                          height=self.cube_height,
                                                           cornerradius=6,
                                                           padding=2,
                                                           color=SingleBoggleGameGUI.CELL_COLORS["UNSELECTED"],
@@ -159,8 +160,8 @@ class SingleBoggleGameGUI:
             prev_loc_is_first {bool} -- whether to color the previous cell with the selected color, or the "head cell" color (default: {None})
         """
         self.__board_buttons[location] = RoundedButton(parent=self.__board_frame,
-                                                       width=100,
-                                                       height=100,
+                                                       width=self.cube_width,
+                                                       height=self.cube_height,
                                                        cornerradius=6,
                                                        padding=2,
                                                        color=SingleBoggleGameGUI.CELL_COLORS["HEAD"] if is_selected else SingleBoggleGameGUI.CELL_COLORS["UNSELECTED"],
@@ -176,8 +177,8 @@ class SingleBoggleGameGUI:
 
         if prev_loc:  # reset color of prev selected button
             self.__board_buttons[prev_loc] = RoundedButton(parent=self.__board_frame,
-                                                           width=100,
-                                                           height=100,
+                                                           width=self.cube_width,
+                                                           height=self.cube_height,
                                                            cornerradius=6,
                                                            padding=2,
                                                            color=SingleBoggleGameGUI.CELL_COLORS[

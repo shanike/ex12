@@ -4,6 +4,8 @@ from tkinter.constants import LEFT, RIGHT, TOP
 
 class HomePageGUI:
 
+    START_BTN_TEXT = {"FIRST_LAUNCH": "START", "NOT_FIRST_LAUNCH": "ANOTHER!"}
+
     def __init__(self, root, bg_color):
         HomePageGUI.BG_COLOR = bg_color
         self.root = root
@@ -14,24 +16,26 @@ class HomePageGUI:
         self.__title_name = tk.Label(self.__title_fr, text="NAME")
         self.__title_score = tk.Label(self.__title_fr, text="SCORE")
 
-    def __add_start_btn(self, on_start_game):
+    def __add_start_btn(self, on_start_game, text):
         # play btn
         self.__start_game_btn = tk.Button(self.root,
                                           font=("", 50),
-                                          text="Start",
+                                          text=text,
                                           background="#616f9c",
                                           command=lambda: on_start_game()
                                           )
         self.__start_game_btn.pack(pady=(10, 0))
 
     def __remove_score_table(self):
-        self.__start_game_btn.destroy()
+        self.__start_game_btn.destroy()  # initializes every start of game
 
     def add_home_page(self, on_start_game, is_launch=True, player_name=None, player_score=None):
-        self.__add_start_btn(on_start_game)
+        self.__add_start_btn(on_start_game,
+                             text=HomePageGUI.START_BTN_TEXT['FIRST_LAUNCH'] if is_launch else HomePageGUI.START_BTN_TEXT['NOT_FIRST_LAUNCH'])
 
         if not is_launch:
-
+            # show scores table
+            # todo ui score table
             self.__scores_overview_container.pack(side=TOP)
             self.__title_fr.pack(side=TOP)
             self.__title_name.pack(side=LEFT, expand=True)

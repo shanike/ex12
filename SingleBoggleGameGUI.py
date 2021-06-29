@@ -1,3 +1,4 @@
+from os import kill
 import tkinter as tk
 from tkinter import RIGHT
 from BorderRadius import RoundedButton
@@ -20,8 +21,17 @@ class SingleBoggleGameGUI:
 
     def __init__(self, root, bg_color, on_selection, on_reset, on_guess, on_time_up, vh, vw):
         """
+            :param bg_color: {str} -- hex color of screen's background color
             :param on_selection: {func} -- function to be called when user selects a cell on board. 
             the function will get the value and the location of the selected cell
+<<<<<<< HEAD
+=======
+            :param on_reset: {func} -- function to be called when user clicks the reset button.
+            :param on_guess: {func} -- function to be called when user clicks the check button.
+            :param on_time_up: {func} -- function to be called when time is up, and game is supposed to be over.
+            :param vw: {int} -- screen's vw, for responsiveness (not really responsive tho).
+            :param vh: {int} -- screen's vh, for responsiveness (not really responsive tho).
+>>>>>>> 9fddd0217883d3dcd81b7a9828d10a2322fd4c25
         """
         SingleBoggleGameGUI.BG_COLOR = bg_color
 
@@ -78,7 +88,6 @@ class SingleBoggleGameGUI:
         self.__words_list_container = tk.Frame(self.root,
                                                bg=SingleBoggleGameGUI.BG_COLOR,
                                                highlightthickness=1, highlightbackground="brown")
-        self.locations_to_reset = []
 
     def add_single_game(self, board):
         """adds all relevant widgets for a single boggle game
@@ -193,3 +202,6 @@ class SingleBoggleGameGUI:
         self.__check_btn.pack_forget()
         self.__reset_btn.pack_forget()
         self.__words_list_container.pack_forget()
+        for btn in self.__board_buttons:
+            self.__board_buttons[btn].grid_remove()
+        self.__board_buttons = {}

@@ -11,13 +11,13 @@ class SingleBoggleGameGUI:
         "UNSELECTED": "#89b0ae",
         "UNSELECTED_HOVER": "#b4dbd9",
 
-        "SELECTED": "#D7C49E",
-        "SELECTED_HOVER": "#C7D3D4",
+        "SELECTED": "#7b9acc",
+        "SELECTED_HOVER": "#7b9acc",
 
         "HEAD": "#195190",
-        "HEAD_HOVER": "#7b9acc",
+        "HEAD_HOVER": "#5294e0",
     }
-    TIMER_SEC = 10
+    TIMER_SEC = 180
 
     def __init__(self, root, bg_color, on_selection, on_reset, on_guess, on_time_up, vh, vw):
         """

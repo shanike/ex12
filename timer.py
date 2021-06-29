@@ -5,26 +5,30 @@ from tkinter import messagebox
 class Timer:
     def __init__(self, parent, count, on_time_up):
         self.__on_time_up = on_time_up
-        self.parent = parent
-        self.count = count
+        self.__parent = parent
+        self.__count = count
         # setting the default value as 0
-        self.minute = StringVar(self.parent, "03")  # todo set afterward or now?
-        self.second = StringVar(self.parent, "00")  # todo set afterward or now?
+        self.__minute = StringVar(self.__parent, "03")
+        self.__second = StringVar(self.__parent, "00")
 
-        self.minute_label = Label(self.parent, width=3, font=("Arial", 18, ""),
-                                  textvariable=self.minute, bg="#ffd6ba", foreground="white")
-        self.second_label = Label(self.parent, width=3, font=("Arial", 18, ""),
-                                  textvariable=self.second, bg="#ffd6ba", foreground="white")
+        self.__minute_label = Label(self.__parent, width=3, font=("Arial", 18, ""),
+                                  textvariable=self.__minute, bg="#ffd6ba", foreground="white")
+        self.__second_label = Label(self.__parent, width=3, font=("Arial", 18, ""),
+                                  textvariable=self.__second, bg="#ffd6ba", foreground="white")
 
-    def set_timer(self):
+    def init_timer(self):
+        """renders timer elements to the screen
+        """
         # set labels
-        self.minute_label.place(x=130, y=20)
+        self.__minute_label.place(x=130, y=20)
 
-        self.second_label.place(x=180, y=20)
+        self.__second_label.place(x=180, y=20)
 
-        self.countdown(self.count)
+        self.__countdown(self.__count)
 
-    def countdown(self, count):
+    def __countdown(self, count):
+        """updates screen to show current time left
+        """
         if count > -1:
 
             mins, secs = divmod(count, 60)
@@ -32,20 +36,22 @@ class Timer:
                 mins = count % 60
 
             # using format () method to store the value up to
-            self.minute.set("{0:0=2d}".format(mins))
-            self.second.set("{0:0=2d}".format(secs))
+            self.__minute.set("{0:0=2d}".format(mins))
+            self.__second.set("{0:0=2d}".format(secs))
 
             # when temp value = 0; then a messagebox pop's up
             # with a message:"Time's up"
             if count == 0:
                 messagebox.showinfo("Time Countdown", "Time's up ")
-                self.on_time_up()
+                self.__on_time_up()
             # after every one sec the value of temp will be decremented by one
-            self.parent.after(1000, self.countdown, count - 1)
+            self.__parent.after(1000, self.__countdown, count - 1)
 
-    def on_time_up(self):
+    def __on_time_up(self):
         self.__on_time_up()
 
     def remove_timer(self):
-        self.minute_label.pack_forget()
-        self.second_label.pack_forget()
+        """removes timer from view
+        """
+        self.__minute_label.pack_forget()
+        self.__second_label.pack_forget()

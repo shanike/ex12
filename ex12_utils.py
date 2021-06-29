@@ -115,7 +115,7 @@ def _find_length_n_words_helper(n, board, words, start, paths, curr_path, curr_w
             continue
         curr_letter = _get_letter(board, new_loc)
 
-        _find_length_n_words_helper(n, board, {word for word in words if word.startswith(curr_word)},
+        _find_length_n_words_helper(n, board, {word for word in words if word.startswith(curr_word)}, # sort words list? (before) and binary search
                                     new_loc, paths,
                                     curr_path + [new_loc],
                                     curr_word + curr_letter)

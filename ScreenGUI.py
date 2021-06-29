@@ -13,7 +13,10 @@ class ScreenGUI:
     this class will "route" between the home page and the single game page
     """
 
-    BG_COLOR = "#bee3db"
+    BG_COLOR = "#F8EDEB"
+
+    ROOT_WIDTH = 1200
+    ROOT_HEIGHT = 700
 
     def __init__(self, on_start_game, on_selection, on_guess, on_reset, on_time_up):
         self.__on_start_game = on_start_game
@@ -42,19 +45,20 @@ class ScreenGUI:
 
         root.configure(background=ScreenGUI.BG_COLOR)
         self.w, self.h = root.winfo_screenwidth(), root.winfo_screenheight()
-        root.geometry("%dx%d+0+0" % (self.w, self.h))
+        root.geometry("%dx%d+0+0" % (ScreenGUI.ROOT_WIDTH, ScreenGUI.ROOT_HEIGHT))
         self.root = root
 
     def __static_widgets(self):
         title = tk.Label(self.root,
-                         font=("", 20), text="BOGGLE GAME! YAY☺️", background=ScreenGUI.BG_COLOR,
-                         relief="groove"
+                         font=("", 28, "bold"),
+                         text="BOGGLE GAME! yay! ☺️",
+                         background=ScreenGUI.BG_COLOR,
                          )
-        title.pack(side=tk.TOP, pady=10)
+        title.pack(side=tk.TOP, pady=(30, 5))
 
         instructions = tk.Label(self.root, font=(
-            "", 16), text="find as many words as you can:", background=ScreenGUI.BG_COLOR)
-        instructions.pack(side=tk.TOP)
+            "", 16, "italic"), text="find as many words as you can:", background=ScreenGUI.BG_COLOR)
+        instructions.pack(side=tk.TOP, pady=(0, 40))
 
     def start_again(self, score):
         """

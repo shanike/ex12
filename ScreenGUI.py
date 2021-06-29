@@ -73,7 +73,7 @@ class ScreenGUI:
         self.SingleBoggleGameGUI.set_curr_path_label(text)
 
     def update_score_label(self, new_score):
-        self.SingleBoggleGameGUI.update_score_label(new_score)
+        self.SingleBoggleGameGUI.set_score_label(new_score)
 
     def update_board(self, *args, **kwargs):
         self.SingleBoggleGameGUI.update_board(*args, **kwargs)

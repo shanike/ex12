@@ -100,6 +100,7 @@ class Boggle:
             self.__score += calc_score(self.__curr_path)  # change score
             self.__update_score()
 
+            # reset board
             self.___reset_selection()
 
     def ___reset_selection(self):
@@ -115,6 +116,8 @@ class Boggle:
         """
         game over, reset all variables and call home page
         """
+        self.__gui.start_again(self.__score)
+
         # reset board:
         self.__board = []
 
@@ -131,7 +134,6 @@ class Boggle:
         # reset correct words:
         self.__correct_words = []
 
-        self.__gui.start_again(self.__score)
 
 
 if __name__ == "__main__":

@@ -17,7 +17,6 @@ class HomePageGUI:
         self.circle_w_and_h = self.vw_func(7.5)
         self.__parent = parent
 
-
         self.__score_table_title = tk.Label(self.__parent,
                                             text="Previous Scores:",
                                             font=('', 22),
@@ -43,8 +42,8 @@ class HomePageGUI:
         self.__start_game_btn = None
         self.__start_game_label = None
 
-
     def add_home_page(self, on_start_game, is_launch=True, player_name=None, player_score=None):
+        self.__add_start_btn(on_start_game, is_launch)
         if not is_launch:
             new_player = {"name": player_name if player_name else "Sam", "score": player_score if player_score else 0}
             self.__scores_overview.append(new_player)
@@ -58,8 +57,10 @@ class HomePageGUI:
             self.__score_tablehead_name.grid(row=1, column=1)
             self.__score_tablehead_score.grid(row=1, column=2)
             self.__show_scores()
-
-        self.__add_start_btn(on_start_game, is_launch)
+        else:
+            self.__meme = tk.PhotoImage(file="homepage_meme.png").subsample(2)
+            self.__meme_label = tk.Label(self.__parent, image=self.__meme)
+            self.__meme_label.pack()
 
     def __add_start_btn(self, on_start_game, is_launch):
         # play btn
@@ -123,7 +124,12 @@ class HomePageGUI:
                 item.grid_forget()
             self.__scores_table_fr.pack_forget()
 
+    def __remove_all_from_parent(self):
+        for elem in self.__parent.pack_slaves():
+            elem.pack_forget()
+
     def remove_home_page(self):
+        self.__remove_all_from_parent()
         self.__remove_score_table()
         self.__start_game_label.pack_forget()
         self.__start_game_btn.pack_forget()  # initializes (.pack()) on every start of game

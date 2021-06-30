@@ -23,13 +23,12 @@ class ScreenGUI:
         self.__init_root()
 
         self.__game_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
-
         self.__top_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
         self.__top_container.pack(side=TOP)
         # create background and static stuff:
         self.__init_top_widgets(self.__top_container)
 
-        self.__home_page_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
+        self.__home_page_container = tk.Frame(self.__top_container, background=ScreenGUI.BG_COLOR)
         self.__home_page_container.pack()
         self.HomePageGUI = HomePageGUI(self.__home_page_container, self.vh_func, self.vw_func, bg_color=ScreenGUI.BG_COLOR)
         self.HomePageGUI.add_home_page(self.__on_start_game)

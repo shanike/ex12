@@ -3,7 +3,7 @@ from tkinter import RIGHT
 from tkinter.constants import BOTTOM, LEFT, N, NE, TOP, TRUE
 from RoundedButton import RoundedButton
 from boggle_utils import bind_values_to_func
-from timer import Timer
+from Timer import Timer
 
 
 class SingleBoggleGameGUI:

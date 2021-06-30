@@ -22,14 +22,14 @@ class ScreenGUI:
         self.root = None
         self.__init_root()
 
-        self.__game_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR, width=ScreenGUI.ROOT_HEIGHT)
-
+        self.__game_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
+        
         self.__top_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
         self.__top_container.pack(side=TOP)
         # create background and static stuff:
         self.__init_top_widgets(self.__top_container)
 
-        self.__home_page_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
+        self.__home_page_container = tk.Frame(self.__top_container, background=ScreenGUI.BG_COLOR)
         self.__home_page_container.pack()
         self.HomePageGUI = HomePageGUI(self.__home_page_container, bg_color=ScreenGUI.BG_COLOR)
         self.HomePageGUI.add_home_page(self.__on_start_game)
@@ -70,6 +70,7 @@ class ScreenGUI:
         instructions = tk.Label(parent, font=(
             "", 16, "italic"), text="find as many words as you can:", background=ScreenGUI.BG_COLOR)
         instructions.pack(side=tk.TOP, pady=(0, 40))
+        
 
     def end_game(self, score):
         """

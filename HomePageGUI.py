@@ -10,28 +10,34 @@ class HomePageGUI:
 
     SCORES_TABLE_BG = "#ECE4DB"
 
-    def __init__(self, parent, bg_color):
+    def __init__(self, parent, vh_func, vw_func, bg_color):
         HomePageGUI.BG_COLOR = bg_color
-
+        self.vh_func, self.vw_func = vh_func, vw_func
+        self.score_width = self.vw_func(1.2)
+        self.circle_w_and_h = self.vw_func(7.5)
         self.__parent = parent
 
 
         self.__score_table_title = tk.Label(self.__parent,
-                                            text="previous scores:",
+                                            text="Previous Scores:",
                                             font=('', 22),
-                                            background=HomePageGUI.BG_COLOR
+                                            background=HomePageGUI.BG_COLOR,
+                                            foreground='#091c33',
                                             )
-        self.__scores_table_fr = tk.Frame(self.__parent, background="red")
-        self.__score_tablehead_name = tk.Label(self.__scores_table_fr, width=20, fg='purple',
+        self.__scores_table_fr = tk.Frame(self.__parent,)
+        self.__score_tablehead_name = tk.Label(self.__scores_table_fr, width=self.score_width, fg='#1d3652',
                                                font=('Arial', 16, 'bold'),
                                                text="NAME",
-                                               background=HomePageGUI.SCORES_TABLE_BG
+                                               background=HomePageGUI.SCORES_TABLE_BG,
+                                               foreground="#7a71a8",
                                                )
 
-        self.__score_tablehead_score = tk.Label(self.__scores_table_fr, width=20, fg='purple',
+        self.__score_tablehead_score = tk.Label(self.__scores_table_fr, width=self.score_width, fg='#1d3652',
                                                 font=('Arial', 16, 'bold'),
                                                 text="SCORE",
-                                                background=HomePageGUI.SCORES_TABLE_BG)
+                                                background=HomePageGUI.SCORES_TABLE_BG,
+                                                foreground="#7a71a8",
+                                            )
         self.__scores_overview = []
 
         self.__start_game_btn = None
@@ -57,16 +63,20 @@ class HomePageGUI:
 
     def __add_start_btn(self, on_start_game, is_launch):
         # play btn
+        self.__start_game_btns_ctr = tk.Frame(self.__parent, background=HomePageGUI.BG_COLOR)
+        
         text = HomePageGUI.START_BTN_TEXT['FIRST_LAUNCH'] if is_launch else HomePageGUI.START_BTN_TEXT['NOT_FIRST_LAUNCH']
 
-        self.__start_game_label = tk.Label(self.__parent,
-                                           text=text, background=HomePageGUI.BG_COLOR, font=("", 20, "bold", "italic"))
+        self.__start_game_label = tk.Label(self.__start_game_btns_ctr,
+                                           text=text, 
+                                           background=HomePageGUI.BG_COLOR, 
+                                           font=("", 20, "bold", "italic"),
+                                           foreground='#6d9983',
+                                           )
 
-        self.__start_game_label.pack(side=TOP, pady=(20, 0))
-
-        self.__start_game_btn = RoundedButton(parent=self.__parent,
-                                              width=120,
-                                              height=120,
+        self.__start_game_btn = RoundedButton(parent=self.__start_game_btns_ctr,
+                                              width=self.circle_w_and_h,
+                                              height=self.circle_w_and_h,
                                               cornerradius=60,
                                               padding=0,
                                               color="#006d77",
@@ -77,19 +87,23 @@ class HomePageGUI:
                                               text='▶',
                                               command=lambda: on_start_game()
                                               )
-        self.__start_game_btn.pack(side=TOP)
+        self.__start_game_btns_ctr.pack(side=TOP, pady=(self.vh_func(4)))
+        self.__start_game_label.pack(pady=(0, self.vh_func(1))) # pady=(self.vh_func(3), 0) ayala
+        self.__start_game_btn.pack()
 
     def __show_scores(self):
         row_cnt = 2  # first row is title
         for i in range(len(self.__scores_overview) - 1, -1, -1):  # reverse display
             player = self.__scores_overview[i]
+            # values of names
             tk.Label(self.__scores_table_fr,
-                     width=20, fg='blue',
+                     width=self.score_width, fg='#1d3652',
                      font=('Arial', 16, 'bold'),
                      text=player["name"],
                      background=HomePageGUI.SCORES_TABLE_BG
                      ).grid(row=row_cnt, column=1)
-            tk.Label(self.__scores_table_fr, width=20, fg='blue',
+            # values of names
+            tk.Label(self.__scores_table_fr, width=self.score_width, fg='#1d3652',
                      font=('Arial', 16, 'bold'),
                      text=player["score"],
                      background=HomePageGUI.SCORES_TABLE_BG

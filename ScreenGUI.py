@@ -22,7 +22,7 @@ class ScreenGUI:
         self.root = None
         self.__init_root()
 
-        self.__game_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR, width=ScreenGUI.ROOT_HEIGHT)
+        self.__game_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
 
         self.__top_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
         self.__top_container.pack(side=TOP)
@@ -31,7 +31,7 @@ class ScreenGUI:
 
         self.__home_page_container = tk.Frame(self.root, background=ScreenGUI.BG_COLOR)
         self.__home_page_container.pack()
-        self.HomePageGUI = HomePageGUI(self.__home_page_container, bg_color=ScreenGUI.BG_COLOR)
+        self.HomePageGUI = HomePageGUI(self.__home_page_container, self.vh_func, self.vw_func, bg_color=ScreenGUI.BG_COLOR)
         self.HomePageGUI.add_home_page(self.__on_start_game)
 
         self.SingleBoggleGameGUI = SingleBoggleGameGUI(self.__game_container,
@@ -58,18 +58,25 @@ class ScreenGUI:
                          font=("", 28, "bold"),
                          text="BOGGLE GAME! yay! ☺️",
                          background=ScreenGUI.BG_COLOR,
-                         )
-        title.pack(side=tk.TOP, pady=(30, 5))
+                         foreground='#1d3652',
+                        )
+        title.pack(side=tk.TOP, pady=(self.vh_func(4), self.vh_func(1)))
 
         slogen = tk.Label(parent,
                           font=("", 10,),
                           text="תפזורת - אבל מותר לשנות כיוון במסלול 😉"[::-1],
-                          background=ScreenGUI.BG_COLOR)
+                          background=ScreenGUI.BG_COLOR,
+                          foreground='#1d3652',
+                        )
         slogen.pack()
 
-        instructions = tk.Label(parent, font=(
-            "", 16, "italic"), text="find as many words as you can:", background=ScreenGUI.BG_COLOR)
-        instructions.pack(side=tk.TOP, pady=(0, 40))
+        instructions = tk.Label(parent, 
+                                font=("", 16, "italic"), 
+                                text="find as many words as you can:", 
+                                background=ScreenGUI.BG_COLOR,
+                                foreground='#1d3652',
+                            )
+        instructions.pack(side=tk.TOP)
 
     def end_game(self, score):
         """

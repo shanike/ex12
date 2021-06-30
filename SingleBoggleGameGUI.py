@@ -15,12 +15,12 @@ class SingleBoggleGameGUI:
         "SELECTED": "#7b9acc",
         "SELECTED_HOVER": "#7b9acc",
 
-        "HEAD": "#195190",
-        "HEAD_HOVER": "#5294e0",
+        "HEAD": "#3f6691",
+        "HEAD_HOVER": "#4f7eb3",
     }
-    LEFT_BG_COLOR = "#195190"
-    RIGHT_BG_COLOR = "#195190"
-    TIMER_SEC = 180
+    LEFT_BG_COLOR = "#3f6691"
+    RIGHT_BG_COLOR = "#3f6691"
+    TIMER_SEC = 180 # three minutes
 
     def __init__(self, parent, bg_color, on_selection, on_reset, on_guess, on_time_up, vh_func, vw_func):
         """
@@ -30,7 +30,7 @@ class SingleBoggleGameGUI:
             :param on_reset: {func} -- function to be called when user clicks the reset button.
             :param on_guess: {func} -- function to be called when user clicks the check button.
             :param on_time_up: {func} -- function to be called when time is up, and game is supposed to be over.
-            :param vh_func: {func} -- convert hight percents to numbers that can be used for Tk (px?)
+            :param vh_func: {func} -- convert height percents to numbers that can be used for Tk (px?)
             :param vw_func: {func} -- convert width percents to numbers that can be used for Tk (px?)
         """
         SingleBoggleGameGUI.BG_COLOR = bg_color
@@ -38,6 +38,9 @@ class SingleBoggleGameGUI:
         self.vh_func, self.vw_func = vh_func, vw_func
         self.__cube_width = self.vw_func(5)
         self.__cube_height = self.vh_func(8)
+        self.grid_padding_x_right = vw_func(7)
+        self.grid_cube_padding_x_right = self.vw_func(0.9)
+        self.grid_cube_padding_y_up = self.vh_func(1.5)
         self.__on_selection = on_selection
         self.__on_reset = on_reset
         self.__on_guess = on_guess
@@ -50,7 +53,7 @@ class SingleBoggleGameGUI:
         # check button
         self.__check_btn = tk.Button(self.__right_side_fr,
                                      borderwidth=0,
-                                     text='submit',
+                                     text='SUBMIT',
                                      font=("", 22, "bold"),
                                      highlightbackground=SingleBoggleGameGUI.RIGHT_BG_COLOR,
                                      activebackground=SingleBoggleGameGUI.RIGHT_BG_COLOR,
@@ -62,7 +65,7 @@ class SingleBoggleGameGUI:
         # reset button
         self.__reset_btn = tk.Button(self.__right_side_fr,
                                      borderwidth=0,
-                                     text='reset',
+                                     text='RESET',
                                      font=("", 22, "bold"),
                                      highlightbackground=SingleBoggleGameGUI.RIGHT_BG_COLOR,
                                      activebackground=SingleBoggleGameGUI.RIGHT_BG_COLOR,
@@ -80,7 +83,7 @@ class SingleBoggleGameGUI:
         self.__board_frame = tk.Frame(self.__center_fr, background=SingleBoggleGameGUI.BG_COLOR)
         self.__board_frame.grid_columnconfigure(0, weight=1)
         # current path label:
-        self.__curr_word_label = tk.Label(self.__center_fr, font=("", 30), background="lightgrey", width=10)
+        self.__curr_word_label = tk.Label(self.__center_fr, font=("", 30), background="lightgrey", width=self.vw_func(1))
         self.__board_buttons = {}
 
         #: left side:
@@ -89,7 +92,7 @@ class SingleBoggleGameGUI:
         # score label:
         self.__score_label = tk.Label(self.__left_side_fr,
                                       font=("", 22, "bold"), background=SingleBoggleGameGUI.LEFT_BG_COLOR, foreground="white",
-                                      text="score: 0")
+                                      text="SCORE: 0")
         # correct words list:
         self.__words_list_container = tk.Frame(self.__left_side_fr,
                                                background=SingleBoggleGameGUI.LEFT_BG_COLOR,)
@@ -107,14 +110,14 @@ class SingleBoggleGameGUI:
         self.__init_left_side()
 
     def __init_right_side(self):
-        self.__right_side_fr.grid(padx=(100), column=5, row=1)
+        self.__right_side_fr.grid(padx=(self.grid_padding_x_right), column=5, row=1)
         # guess button:
-        self.__check_btn.pack(side=TOP, pady=(10))
+        self.__check_btn.pack(side=TOP, pady=(self.vh_func(3)))
         # reset button:
         self.__reset_btn.pack(side=BOTTOM)
 
     def __init_center(self, board):
-        self.__center_fr.grid(padx=(100), column=2, row=1, columnspan=3)
+        self.__center_fr.grid(padx=(self.grid_padding_x_right), column=2, row=1, columnspan=3)
 
         # start the timer
         self.__timer_container.pack(side=TOP)
@@ -122,10 +125,10 @@ class SingleBoggleGameGUI:
         # board
         self.__init_board(board)
         # current path on top label:
-        self.__curr_word_label.pack(side=tk.TOP, pady=10)
+        self.__curr_word_label.pack(side=tk.TOP, pady=self.vh_func(3))
 
     def __init_left_side(self):
-        self.__left_side_fr.grid(padx=(100), column=1, row=1)
+        self.__left_side_fr.grid(padx=(self.grid_padding_x_right), column=1, row=1)
         # score label:
         self.__score_label.pack(side=TOP)
         # correct words list:
@@ -158,16 +161,16 @@ class SingleBoggleGameGUI:
                                                           command=bind_values_to_func(self.__on_selection, value, (i, j)), )
 
                 # self.__board_buttons[loc].grid_configure(columnspan=1, padx=5, pady=5)
-                self.__board_buttons[loc].grid(row=i, column=j, pady=10, padx=10)
+                self.__board_buttons[loc].grid(row=i, column=j, pady=self.vh_func(1.5), padx=self.vw_func(0.9))
 
     def __init_words_list_container(self):
         """renders correct words list Frame
         """
-        self.__words_list_container.pack(side=TOP, pady=(30, 0), expand=True)
+        self.__words_list_container.pack(side=TOP, pady=(self.vh_func(4.5), 0), expand=True)
 
         words_list_title = tk.Label(self.__words_list_container,
                                     font=("", 16),
-                                    text="Correct words:",
+                                    text="Correct Words:",
                                     background=SingleBoggleGameGUI.LEFT_BG_COLOR,
                                     foreground="white"
                                     )
@@ -197,7 +200,7 @@ class SingleBoggleGameGUI:
                                                        command=bind_values_to_func(
                                                            self.__on_selection, self.board[location[0]][location[1]], location)
                                                        )
-        self.__board_buttons[location].grid(row=location[0], column=location[1], pady=10, padx=10)
+        self.__board_buttons[location].grid(row=location[0], column=location[1], pady=self.grid_cube_padding_y_up, padx=self.grid_cube_padding_x_right)
 
         if prev_loc:  # reset color of prev selected button
             self.__board_buttons[prev_loc] = RoundedButton(parent=self.__board_frame,
@@ -215,7 +218,7 @@ class SingleBoggleGameGUI:
                                                            command=bind_values_to_func(
                                                                self.__on_selection, self.board[prev_loc[0]][prev_loc[1]], prev_loc)
                                                            )
-            self.__board_buttons[prev_loc].grid(row=prev_loc[0], column=prev_loc[1], pady=10, padx=10)
+            self.__board_buttons[prev_loc].grid(row=prev_loc[0], column=prev_loc[1], pady=self.grid_cube_padding_y_up, padx=self.grid_cube_padding_x_right)
 
     def set_curr_path_label(self, text):
         """ sets <text> to be displayed in label at the top of the screen (the word guessing label)
@@ -228,7 +231,7 @@ class SingleBoggleGameGUI:
 
             :param new_score: {int} -- user's score
         """
-        self.__score_label.configure(text="score: " + str(new_score))
+        self.__score_label.configure(text="SCORE: " + str(new_score))
 
     def add_word_to_list(self, word):
         """adds a word to the words_list_container Frame

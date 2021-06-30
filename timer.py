@@ -12,9 +12,9 @@ class Timer:
         self.__second = StringVar(self.__parent, "00")
 
         self.__minute_label = Label(self.__parent, width=3, font=("Arial", 18, ""),
-                                  textvariable=self.__minute, bg="#ffd6ba", foreground="white")
+                                  textvariable=self.__minute, bg="#ffc59c", foreground="white")
         self.__second_label = Label(self.__parent, width=3, font=("Arial", 18, ""),
-                                  textvariable=self.__second, bg="#ffd6ba", foreground="white")
+                                  textvariable=self.__second, bg="#ffc59c", foreground="white")
 
     def init_timer(self):
         """renders timer elements to the screen
@@ -46,9 +46,6 @@ class Timer:
                 self.__on_time_up()
             # after every one sec the value of temp will be decremented by one
             self.__parent.after(1000, self.__countdown, count - 1)
-
-    def __on_time_up(self):
-        self.__on_time_up()
 
     def remove_timer(self):
         """removes timer from view

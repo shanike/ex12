@@ -45,16 +45,16 @@ def find_length_n_paths(n, board, words):
         for col in range(len(board[0])):
             curr_loc = (row, col)
             curr_word = _get_letter(board, curr_loc)
-            indexes = matching_words_indexes_range(curr_word)
+            # indexes = matching_words_indexes_range(curr_word)
             _find_length_n_paths_helper(n, board, words, indexes, curr_loc, paths, [curr_loc], curr_word)
     return paths
 
 
 def matching_words_indexes_range(curr_word, indexes=None):
     # if not indexes:todo if indexes is all
-    for i in range(indexes[0], indexes[1]):
-
-    return 2, 3
+    # for i in range(indexes[0], indexes[1]):
+    pass
+    # return 2, 3
 
 
 def _find_length_n_paths_helper(n, board, words, indexes, start, paths, curr_path, curr_word):

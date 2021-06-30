@@ -63,7 +63,7 @@ class ScreenGUI:
 
         slogen = tk.Label(parent,
                           font=("", 10,),
-                          text="תפזורת - אבל מותר לשנות כיוון במסלול "[::-1]+"(:",
+                          text="(:"+"תפזורת - אבל מותר לשנות כיוון במסלול "[::-1],
                           background=ScreenGUI.BG_COLOR,
                           foreground='#1d3652',
                         )

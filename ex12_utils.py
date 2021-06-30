@@ -45,11 +45,20 @@ def find_length_n_paths(n, board, words):
     for row in range(len(board)):
         for col in range(len(board[0])):
             curr_loc = (row, col)
-            _find_length_n_paths_helper(n, board, words, curr_loc, paths, [curr_loc], _get_letter(board, curr_loc))
+            curr_word = _get_letter(board, curr_loc)
+            indexes = matching_words_indexes_range(curr_word)
+            _find_length_n_paths_helper(n, board, words, indexes, curr_loc, paths, [curr_loc], curr_word)
     return paths
 
 
-def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, curr_word):
+def matching_words_indexes_range(curr_word, indexes=None):
+    # if not indexes:todo if indexes is all
+    for i in range(indexes[0], indexes[1]):
+
+    return 2, 3
+
+
+def _find_length_n_paths_helper(n, board, words, indexes, start, paths, curr_path, curr_word):
     """
     recursive function that checks all paths of length <n> and appends to <paths> list only the paths which create a
     word which is in the <words> list
@@ -62,7 +71,7 @@ def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, curr_w
     """
     if len(curr_path) == n:
         # finished this path, check word
-        if curr_word in words:
+        if curr_word in words[indexes[0]: indexes[1]]:  # todo iterate it more efficiency
             paths.append(curr_path)
         return
 
@@ -74,8 +83,7 @@ def _find_length_n_paths_helper(n, board, words, start, paths, curr_path, curr_w
             continue
         new_word = curr_word + _get_letter(board, new_loc)
 
-        _find_length_n_paths_helper(n, board, {word for word in words if word.startswith(
-            curr_word)}, new_loc, paths, curr_path + [new_loc], new_word)
+        _find_length_n_paths_helper(n, board, words, indexes, new_loc, paths, curr_path + [new_loc], new_word)
 
 
 def find_length_n_words(n, board, words):
@@ -115,7 +123,7 @@ def _find_length_n_words_helper(n, board, words, start, paths, curr_path, curr_w
             continue
         curr_letter = _get_letter(board, new_loc)
 
-        _find_length_n_words_helper(n, board, {word for word in words if word.startswith(curr_word)}, # sort words list? (before) and binary search
+        _find_length_n_words_helper(n, board, {word for word in words if word.startswith(curr_word)},  # sort words list? (before) and binary search
                                     new_loc, paths,
                                     curr_path + [new_loc],
                                     curr_word + curr_letter)
@@ -251,7 +259,7 @@ def bind_values_to_func(fn, *args, **kwargs):
 
 
 def calc_score(correct_path):
-    return len(correct_path)**2
+    return len(correct_path) ** 2
 
 
 def get_random_name():

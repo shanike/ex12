@@ -92,7 +92,7 @@ class Boggle:
         else:
             # found valid word:
             if self.__curr_word_label in self.__correct_words:
-                self.__gui.set_err_msg("you correctly guessed this path before")
+                self.__gui.set_err_msg("you correctly guessed this word already")
                 return
 
             # update correct words:

@@ -6,7 +6,7 @@ from tkinter.constants import ANCHOR
 
 
 class RoundedButton(tk.Canvas):
-    def __init__(self, parent, width, height, cornerradius, padding, color, active_color, bg, text, text_color, command=None):
+    def __init__(self, parent, width, height, cornerradius, padding, color, active_color, bg, text, text_color, command=None, font=20):
         tk.Canvas.__init__(self, parent, borderwidth=0,
                            relief="flat", highlightthickness=0, bg=bg)
 
@@ -18,15 +18,16 @@ class RoundedButton(tk.Canvas):
         self.active_color = active_color
         self.bg = bg
         self.text = text
+        self.font = font
         self.text_color = text_color
         self.command = command
         self.command = command
 
-        if cornerradius > 0.5*width:
+        if cornerradius > 0.5 * width:
             print("Error: cornerradius is greater than width.")
             return
 
-        if cornerradius > 0.5*height:
+        if cornerradius > 0.5 * height:
             print("Error: cornerradius is greater than height.")
             return
 
@@ -64,8 +65,6 @@ class RoundedButton(tk.Canvas):
                             # activefill=active_color,
                             outline=self.color if not active else self.active_color)
 
-        self.create_text(self.width / 2, self.height / 2, fill=self.text_color,
-                         font=("Vernada", 20, "bold"), text=self.text,)
         self.create_arc((self.padding, self.padding + self.rad, self.padding + self.rad, self.padding),
                         start=90, extent=90, fill=self.color if not active else self.active_color, outline=self.color if not active else self.active_color)
         self.create_arc((self.width - self.padding - self.rad, self.padding, self.width - self.padding,
@@ -74,6 +73,8 @@ class RoundedButton(tk.Canvas):
                         self.height - self.padding), start=270, extent=90, fill=self.color if not active else self.active_color, outline=self.color if not active else self.active_color)
         self.create_arc((self.padding, self.height - self.padding - self.rad, self.padding + self.rad, self.height -
                         self.padding), start=180, extent=90, fill=self.color if not active else self.active_color, outline=self.color if not active else self.active_color)
+        self.create_text(self.width / 2, self.height / 2, fill=self.text_color,
+                         font=("Vernada", self.font, "bold"), text=self.text,)
 
     def _on_press(self, event):
         self.configure(relief="sunken")

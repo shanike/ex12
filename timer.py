@@ -8,21 +8,21 @@ class Timer:
         self.__parent = parent
         self.__count = count
         # setting the default value as 0
-        self.__minute = StringVar(self.__parent, "03")
+        self.__time_val = StringVar(self.__parent, "03")
         self.__second = StringVar(self.__parent, "00")
 
-        self.__minute_label = Label(self.__parent, width=3, font=("Arial", 18, ""),
-                                  textvariable=self.__minute, bg="#ffc59c", foreground="white")
-        self.__second_label = Label(self.__parent, width=3, font=("Arial", 18, ""),
-                                  textvariable=self.__second, bg="#ffc59c", foreground="white")
+        self.__time_label = Label(self.__parent, width=6, font=("Arial", 18, ""),
+                                  textvariable=self.__time_val, bg="#ffc59c", foreground="white")
+        # self.__second_label = Label(self.__parent, width=3, font=("Arial", 18, ""),
+        #                           textvariable=self.__second, bg="#ffc59c", foreground="white")
 
     def init_timer(self):
         """renders timer elements to the screen
         """
         # set labels
-        self.__minute_label.pack(side=LEFT)
+        self.__time_label.pack(side=LEFT)
 
-        self.__second_label.pack(side=RIGHT)
+        # self.__second_label.pack(side=RIGHT)
 
         self.__countdown(self.__count)
 
@@ -36,8 +36,9 @@ class Timer:
                 mins = count % 60
 
             # using format () method to store the value up to
-            self.__minute.set("{0:0=2d}".format(mins))
-            self.__second.set("{0:0=2d}".format(secs))
+            self.__time_val.set("{0:0=2d}".format(
+                mins)+" : " + "{0:0=2d}".format(secs))
+            # self.__second.set()
 
             # when temp value = 0; then a messagebox pop's up
             # with a message:"Time's up"
@@ -50,5 +51,5 @@ class Timer:
     def remove_timer(self):
         """removes timer from view
         """
-        self.__minute_label.pack_forget()
-        self.__second_label.pack_forget()
+        self.__time_label.pack_forget()
+        # self.__second_label.pack_forget()
